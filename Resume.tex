@@ -1,0 +1,144 @@
+
+
+\documentclass[11pt,a4paper, french]{article}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=blue,      
+    urlcolor=blue, 
+    citecolor=blue
+    }
+
+\urlstyle{same}
+
+\usepackage[T1]{fontenc} 
+\usepackage[francais]{babel} 
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{pdfpages}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[margin=1.5cm, top=1cm, bottom=1.5cm]{geometry}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{calc}
+\usepackage{diagbox}
+\usepackage{bbold}
+\usepackage{array}
+\usepackage{minted}
+\usepackage{alltt}
+\usepackage{pstricks-add}
+\usepackage{pstricks}
+\usepackage{amsthm}
+% \usepackage{moreverb}
+\usepackage{forest}
+\usepackage{tikz}
+\usepackage{enumerate}
+
+
+\usepackage[ruled,lined]{algorithm2e}
+
+\usepackage{float}
+\usepackage[caption = false]{subfig}
+
+
+\usepackage{url}
+
+\usetikzlibrary{automata}
+\usetikzlibrary{calc,arrows.meta,positioning}
+
+\title{\textsc{ADAM: A method for Stochastic Optimization}\\
+Résumé d'article}
+\author{Guillaume BERNARD-REYMOND, Guillaume BOULAND,\\ Camille MOTTIER, Abel SILLY}
+\date{26 septembre 2024}
+% \newcommand{\iddots}{\reflectbox{$\ddots$}}
+
+
+\usetikzlibrary{arrows.meta}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\m}{\mathcal}
+\newcommand{\un}{\mathbb{1}_n}
+\newcommand{\N}{\mathbb{N}}
+
+\newcommand{\vs}[1]{\vspace{#1cm}}
+\newcommand{\hs}[1]{\hspace{#1cm}}
+\newcommand{\dsum}[2]{\displaystyle\sum_{#1}^{#2}}
+\newcommand{\dint}[2]{\displaystyle\int_{#1}^{#2}}
+\newcommand{\ben}{\begin{enumerate}}
+\newcommand{\een}{\end{enumerate}}
+\newcommand{\bit}{\begin{itemize}}
+\newcommand{\eit}{\end{itemize}}
+
+\newcommand{\var}{\mathbb{V}\text{ar}}
+\newcommand{\cov}{\mathbb{C}\text{ov}}
+
+\setlength{\parindent}{0pt}
+\frenchbsetup{StandardLists=true}
+
+\theoremstyle{definition}
+
+\newtheorem{Qu}{Question}
+
+
+\begin{document}
+
+\maketitle
+
+\
+
+\section{Introduction}
+
+L'article étudié ici, intitulé \og ADAM: A method for Stochastic Optimization \fg{}, a été écrit en 2015 par Diederik P. Kingma (Université d'Amsterdam, OpenAI) et Jimmy Lei Ba (Université de Toronto), dans le cadre d'une conférence à l'International Conference on Learning Representations (ICLR). 
+
+\
+
+Cet article présente l'algorithme Adam, algorithme d'optimisation stochastique, basée sur une descente de gradient, dans le cadre d'un espace de paramètres à grande dimension.
+Outre le fait que cet algorithme est simple à implémenter, efficace computationnellement et nécessite peu de mémoire, il offre une méthode qui marche bien dans un large panel de cas, y compris dans les cas problématiques de gradients éparses ou de fonctions-objectifs non stationnaires. En cela, il combine les qualités d'algorithmes existants au préalable, tels que AdaGrad et RMSProp.
+
+\
+
+Cet article présente une description précise de l'algorithme Adam, fournit un résultat de convergence de la méthode et détaille l'apport de l'algorithme Adam vis-à-vis d'autres algorithmes. 
+
+
+
+\section{Algorithme}
+
+On considère une fonction-objectif stochastique $f(\theta)$ de paramètres $\theta$, qu'on suppose différentiable. On souhaite optimiser les paramètres $\theta$ afin de minimiser l'espérance $\mathbb E[f(\theta)]$. \\
+Outre la fonction $f(\theta)$, l'algorithme nécessite la donnée d'un pas $\alpha$, de taux $\beta_1,\beta_2\in[0,1[$, d'une constante $\varepsilon>0$ et de paramètres initiaux $\theta_0$. Il exécute alors le schéma suivant :
+
+
+\begin{algorithm}
+  \caption{Adam}
+  \Entree{$f(\theta)$, $\alpha$, $\beta_1$, $\beta_2$, $\varepsilon$, $\theta_0$}
+  $m_0\longleftarrow 0$ \\
+  $v_0\longleftarrow 0$ \\  
+  $t\longleftarrow 0$ \\
+  \Tq{$\theta_t$ ne converge pas}{
+    $t\longleftarrow t+1$\\
+    $g_t \longleftarrow \nabla_{\theta}f_t(\theta_{t-1})$\\
+    $m_t \longleftarrow \beta_1\cdotp m_{t-1}+(1-\beta_1)\cdotp g_t$\\
+    $v_t \longleftarrow \beta_2\cdotp v_{t-1}+(1-\beta_2)\cdotp g_t^2$\\
+    $\widehat m_t \longleftarrow m_t/(1-\beta_1^t)$\\
+    $\widehat v_t \longleftarrow v_t/(1-\beta_2^t)$\\
+    $\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp \widehat m_t/(\sqrt{\widehat v_t}+\varepsilon)$
+  }
+  \Sortie{$\theta_t$}
+\end{algorithm}
+
+\section{Efficacité et points forts de la méthode}
+
+\section{Amélioration des méthodes AdaGrad et RMSProp}
+
++ visu
+
+
+
+
+
+
+
+
+\end{document}
+
