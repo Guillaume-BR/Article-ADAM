@@ -106,7 +106,7 @@ Cet article présente une description précise de l'algorithme Adam, fournit un 
 \section{Algorithme}
 
 On considère une fonction-objectif stochastique $f(\theta)$ de paramètres $\theta$, qu'on suppose différentiable. On souhaite optimiser les paramètres $\theta$ afin de minimiser l'espérance $\mathbb E[f(\theta)]$. \\
-Outre la fonction $f(\theta)$, l'algorithme nécessite la donnée d'un pas $\alpha$, de taux $\beta_1,\beta_2\in[0,1[$, d'une constante $\varepsilon>0$ et de paramètres initiaux $\theta_0$. Il exécute alors le schéma suivant :
+Outre la fonction $f(\theta)$, l'algorithme nécessite la donnée d'un pas $\alpha$, de taux $\beta_1,\beta_2\in[0,1[$, d'une constante de stabilisation numérique $\varepsilon>0$ et de paramètres initiaux $\theta_0$. Il exécute alors le schéma suivant :
 
 
 \begin{algorithm}
@@ -127,16 +127,94 @@ Outre la fonction $f(\theta)$, l'algorithme nécessite la donnée d'un pas $\alp
   \Sortie{$\theta_t$}
 \end{algorithm}
 
+Pour comprendre cet algorithme et identifier les apports de la méthode Adam, nous pouvons le mettre en relation avec d'autres algorithmes de descente de gradient stochastique, présentés dans l'annexe. Nous pouvons maintenant interpréter les étapes de l'algorithme Adam et identifier les nouveautés. 
+
+\bit
+\item $m_t \longleftarrow \beta_1\cdotp m_{t-1}+(1-\beta_1)\cdotp g_t$\\
+Fournit une estimation de $\mathbb E[g_t]$ par moyenne mobile à décroissance exponentielle : $m_t=(1-\beta_1)\dsum{i=1}t\beta_1^{t-i}\cdotp g_i$.\\
+Permet de garder mémoire des gradients précédents pour atténuer les variations.\\
+On trouve une idée similaire dans l'algorithme SGD avec moment.
+
+\item $v_t \longleftarrow \beta_2\cdotp v_{t-1}+(1-\beta_2)\cdotp g_t^2$\\
+Permettra, lors de la mise à jour des paramètres, une mise à l'échelle du gradient, c'est-à-dire qu'on ne va pas utiliser le même pas pour tous les paramètres. On ralentit le pas pour un paramètre qui a beaucoup changé précédemment, et on l'accélère pour un paramètre qui a peu changé. {\red est-ce bien ça ? c'est le paramètre qui change ou la fonction qu'il fait changer ?!}.\\
+On utilise ici encore une estimation de $\mathbb E[g_t^2]$ obtenue par moyenne mobile à décroissance exponentielle.
+On trouve une idée similaire dans les algorithmes AdaGrad (sans moyenne mobile) et RMSProp. 
+
+\item  $\widehat m_t \longleftarrow m_t/(1-\beta_1^t)$ et 
+$\widehat v_t \longleftarrow v_t/(1-\beta_2^t)$\\
+Permet de corriger le biais vers 0 venant de l'initialisation de $m_0$ et $v_0$ à 0. \\
+C'est une innovation fournie par cet algorithme. 
+\eit
+
+En conclusion, on peut voir que cet algorithme combine les idées fournies par les précédents algorithmes de descente de gradient, tels que la personnalisation des pas à chaque paramètre et la mémorisation du passé par le biais des moyennes mobiles, tout en apportant un vrai élément : la correction des biais des moments d'ordre 1 et 2. 
+
+
+
 \section{Efficacité et points forts de la méthode}
 
 \section{Amélioration des méthodes AdaGrad et RMSProp}
 
 + visu
 
++ biblio ?!!
+
+\section{Annexes}
 
 
 
 
+\begin{algorithm}
+  \caption{SGD}
+  \Entree{$f(\theta)$, $\alpha$, $\theta_0$}
+  $t\longleftarrow 0$ \\
+  \Tq{$\theta_t$ ne converge pas}{
+    $t\longleftarrow t+1$\\
+    $g_t \longleftarrow \nabla_{\theta}f_t(\theta_{t-1})$\\
+    $\theta_t \longleftarrow \theta_{t-1}-\alpha \cdotp g_t(\theta_{t-1})$
+  }
+  \Sortie{$\theta_t$}
+\end{algorithm}
+
+\begin{algorithm}
+  \caption{SGD avec moment (1964)}
+  \Entree{$f(\theta)$, $\alpha$, $\rho$, $\theta_0$} 
+  $t\longleftarrow 0$ \\
+  \Tq{$\theta_t$ ne converge pas}{
+    $t\longleftarrow t+1$\\
+    $g_t \longleftarrow \nabla_{\theta}f_t(\theta_{t-1})$\\
+    $m_t \longleftarrow \rho \cdotp m_{t-1}-\alpha \cdotp g_t$\\
+    $\theta_t \longleftarrow \theta_{t-1}+m_t$
+  }
+  \Sortie{$\theta_t$}
+\end{algorithm}
+
+\begin{algorithm}
+  \caption{AdaGrad (2011)}
+  \Entree{$f(\theta)$, $\alpha$, $\varepsilon$, $\theta_0$}
+  $v_0\longleftarrow 0$ \\  
+  $t\longleftarrow 0$ \\
+  \Tq{$\theta_t$ ne converge pas}{
+    $t\longleftarrow t+1$\\
+    $g_t \longleftarrow \nabla_{\theta}f_t(\theta_{t-1})$\\
+    $v_t \longleftarrow  v_{t-1}+ g_t^2$\\
+    $\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp g_t/(\sqrt{ v_t}+\varepsilon)$
+  }
+  \Sortie{$\theta_t$}
+\end{algorithm}
+
+\begin{algorithm}
+  \caption{RMSProp (2012)}
+  \Entree{$f(\theta)$, $\alpha$, $\beta_2$, $\varepsilon$, $\theta_0$}
+  $v_0\longleftarrow 0$ \\  
+  $t\longleftarrow 0$ \\
+  \Tq{$\theta_t$ ne converge pas}{
+    $t\longleftarrow t+1$\\
+    $g_t \longleftarrow \nabla_{\theta}f_t(\theta_{t-1})$\\
+    $v_t \longleftarrow \beta_2\cdotp v_{t-1}+(1-\beta_2)\cdotp g_t^2$\\
+    $\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp g_t/(\sqrt{v_t}+\varepsilon)$
+  }
+  \Sortie{$\theta_t$}
+\end{algorithm}
 
 
 
