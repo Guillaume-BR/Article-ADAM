@@ -42,8 +42,23 @@
 \usepackage{float}
 \usepackage[caption = false]{subfig}
 
-
+\usepackage[numbers,sort&compress]{natbib} 
+\renewcommand{\cite}[1]{\textsuperscript{\citep{#1}}}
 \usepackage{url}
+% Packages pour la mise en page et la personnalisation de la table des matières
+\usepackage{tocloft}    % Permet de personnaliser la table des matières
+\usepackage{titlesec}   % Permet de personnaliser les titres des sections
+\usepackage{lmodern}    % Améliore la police de base
+\usepackage{setspace}   % Pour gérer les espaces dans le document
+
+% Personnalisation de la table des matières
+\renewcommand{\cftsecfont}{\large\bfseries}  % Sections en gras et en plus grand
+\renewcommand{\cftsecpagefont}{\large\bfseries}  % Numéros de page en gras
+\renewcommand{\cftsubsecfont}{\normalsize\itshape}  % Sous-sections en italique
+\renewcommand{\cftsubsubsecfont}{\normalsize\itshape}  % Soussous-sections en italique
+\renewcommand{\cftsubsecpagefont}{\normalsize\itshape}  % Numéros de sous-sections en italique
+\renewcommand{\cftsubsubsecpagefont}{\normalsize\itshape}  % Numéros de soussous-sections en italique
+\renewcommand{\contentsname}{} % Enlever le "Contents"
 
 \usetikzlibrary{automata}
 \usetikzlibrary{calc,arrows.meta,positioning}
@@ -87,6 +102,14 @@ Résumé d'article}
 \maketitle
 
 \
+
+
+\vspace{1cm}  % Espace entre le titre et la table des matières
+\tableofcontents
+\vspace{1cm} 
+\newpage
+\
+
 
 \section{Introduction}
 
@@ -157,6 +180,13 @@ En conclusion, on peut voir que cet algorithme combine les idées fournies par l
 + visu
 
 + biblio ?!!
+\newpage
+\nocite{kingma2014adam}
+\nocite{starmer2023optimization}
+\renewcommand{\refname}{Sources}
+\bibliographystyle{unsrt}  % Style de bibliographie
+\bibliography{sources}  % Nom du fichier .bib sans l'extension
+\newpage
 
 \section{Annexes}
 
