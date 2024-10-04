@@ -1,0 +1,97 @@
+\documentclass[11pt]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+%\usetheme{Montpellier}
+
+\title{ADAM : Une méthode pour l'optimisation stocchastique}
+\author{Guillaume BERNARD-REYMOND, Guillaume BOULAND,\\ Camille MOTTIER, Abel SILLY}
+\date{Octobre 2024}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{L'algorithme}
+
+\textbf{Entrées :} $f(\theta)$, $\alpha$, $\beta_1$, $\beta_2$, $\varepsilon$, $\theta_0$\\
+\hspace*{0.5cm}   $m_0\longleftarrow 0$ \\
+\hspace*{0.5cm}  $v_0\longleftarrow 0$ \\  
+\hspace*{0.5cm}  $t\longleftarrow 0$ \\
+\hspace*{0.5cm}Tant que $\theta_t$ ne converge pas\\
+   \hspace*{1.5cm} $t\longleftarrow t+1$\\
+   \hspace*{1.5cm} $g_t \longleftarrow \nabla_{\theta}f_t(\theta_{t-1})$\\
+  \hspace*{1.5cm}  $m_t \longleftarrow \beta_1\cdotp m_{t-1}+(1-\beta_1)\cdotp g_t$\\
+   \hspace*{1.5cm} $v_t \longleftarrow \beta_2\cdotp v_{t-1}+(1-\beta_2)\cdotp g_t^2$\\
+   \hspace*{1.5cm} $\widehat m_t \longleftarrow m_t/(1-\beta_1^t)$\\
+   \hspace*{1.5cm} $\widehat v_t \longleftarrow v_t/(1-\beta_2^t)$\\
+   \hspace*{1.5cm} $\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp \widehat m_t/(\sqrt{\widehat v_t}+\varepsilon)$
+  
+\hspace*{0.5cm} \textbf{Sorties :} $\theta_t$
+\end{frame}
+
+\begin{frame}{Explications}
+
+$f_1,\ldots, f_T$ : fonction $f$ restreinte à des mini-batches aléatoires \\
+
+\pause
+
+$g_t \longleftarrow \nabla_{\theta}f_t(\theta_{t-1})$ : mise à jour du gradient \\
+
+ \pause
+ 
+$\left.
+\begin{array}{ll}
+ m_t \longleftarrow \beta_1\cdotp m_{t-1}+(1-\beta_1)\cdotp g_t \\  
+v_t \longleftarrow \beta_2\cdotp v_{t-1}+(1-\beta_2)\cdotp g_t^2   
+\end{array}
+\right\rbrace$ : mise à jour des moments d'ordre 1 et 2 par moyenne mobile \\
+
+
+ 
+ 
+
+\pause
+
+$\left.
+\begin{array}{ll}
+\widehat m_t \longleftarrow m_t/(1-\beta_1^t) \\ 
+  \widehat v_t \longleftarrow v_t/(1-\beta_2^t)      
+\end{array}
+\right\rbrace$ : débiaisage des moments d'ordre 1 et 2 
+
+ 
+
+
+ 
+
+ \pause
+
+ $\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp \widehat m_t/(\sqrt{\widehat v_t}+\varepsilon)$ : Mise à jour de $\theta_t$
+
+    
+\end{frame}
+
+\begin{frame}{Résultats de convergence}
+
+On définit le regret par : $$R(T)=\sum_{t=1}^{T}f_t(x_t)-\min_{x\in\mathcal{X}}\sum_{t=1}^{T}f_t(x)$$
+
+\begin{theorem}
+  Sous certaines hypothèses de majoration du gradient de $f_t$, et de l'écart entre les valeurs de $\theta_n$ on a : 
+    $$\frac{R(T)}{T}=O\left(\frac{1}{\sqrt{T}}\right)$$  
+\end{theorem}
+
+\end{frame}
+
+\begin{frame}{Simulations numériques}
+    Mettre images et commenter
+\end{frame}
+
+\end{document}
