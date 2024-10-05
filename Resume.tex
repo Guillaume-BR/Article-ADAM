@@ -23,10 +23,8 @@
 \usepackage{multicol}
 \usepackage{graphicx}
 \usepackage{calc}
-\usepackage{diagbox}
 \usepackage{bbold}
 \usepackage{array}
-\usepackage{minted}
 \usepackage{alltt}
 \usepackage{pstricks-add}
 \usepackage{pstricks}
@@ -46,19 +44,21 @@
 \renewcommand{\cite}[1]{\textsuperscript{\citep{#1}}}
 \usepackage{url}
 % Packages pour la mise en page et la personnalisation de la table des matières
-\usepackage{tocloft}    % Permet de personnaliser la table des matières
-\usepackage{titlesec}   % Permet de personnaliser les titres des sections
-\usepackage{lmodern}    % Améliore la police de base
-\usepackage{setspace}   % Pour gérer les espaces dans le document
 
-% Personnalisation de la table des matières
-\renewcommand{\cftsecfont}{\large\bfseries}  % Sections en gras et en plus grand
-\renewcommand{\cftsecpagefont}{\large\bfseries}  % Numéros de page en gras
-\renewcommand{\cftsubsecfont}{\normalsize\itshape}  % Sous-sections en italique
-\renewcommand{\cftsubsubsecfont}{\normalsize\itshape}  % Soussous-sections en italique
-\renewcommand{\cftsubsecpagefont}{\normalsize\itshape}  % Numéros de sous-sections en italique
-\renewcommand{\cftsubsubsecpagefont}{\normalsize\itshape}  % Numéros de soussous-sections en italique
-\renewcommand{\contentsname}{} % Enlever le "Contents"
+
+% \usepackage{tocloft}    % Permet de personnaliser la table des matières
+% \usepackage{titlesec}   % Permet de personnaliser les titres des sections
+% \usepackage{lmodern}    % Améliore la police de base
+% \usepackage{setspace}   % Pour gérer les espaces dans le document
+% 
+% % Personnalisation de la table des matières
+% \renewcommand{\cftsecfont}{\large\bfseries}  % Sections en gras et en plus grand
+% \renewcommand{\cftsecpagefont}{\large\bfseries}  % Numéros de page en gras
+% \renewcommand{\cftsubsecfont}{\normalsize\itshape}  % Sous-sections en italique
+% \renewcommand{\cftsubsubsecfont}{\normalsize\itshape}  % Soussous-sections en italique
+% \renewcommand{\cftsubsecpagefont}{\normalsize\itshape}  % Numéros de sous-sections en italique
+% \renewcommand{\cftsubsubsecpagefont}{\normalsize\itshape}  % Numéros de soussous-sections en italique
+% \renewcommand{\contentsname}{} % Enlever le "Contents"
 
 \usetikzlibrary{automata}
 \usetikzlibrary{calc,arrows.meta,positioning}
@@ -66,7 +66,7 @@
 \title{\textsc{ADAM: A method for Stochastic Optimization}\\
 Résumé d'article}
 \author{Guillaume BERNARD-REYMOND, Guillaume BOULAND,\\ Camille MOTTIER, Abel SILLY}
-\date{26 septembre 2024}
+\date{5 octobre 2024}
 % \newcommand{\iddots}{\reflectbox{$\ddots$}}
 
 
@@ -74,7 +74,6 @@ Résumé d'article}
 
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\m}{\mathcal}
-\newcommand{\un}{\mathbb{1}_n}
 \newcommand{\N}{\mathbb{N}}
 
 \newcommand{\vs}[1]{\vspace{#1cm}}
@@ -86,15 +85,12 @@ Résumé d'article}
 \newcommand{\bit}{\begin{itemize}}
 \newcommand{\eit}{\end{itemize}}
 
-\newcommand{\var}{\mathbb{V}\text{ar}}
-\newcommand{\cov}{\mathbb{C}\text{ov}}
+
 
 \setlength{\parindent}{0pt}
 \frenchbsetup{StandardLists=true}
 
-\theoremstyle{definition}
 
-\newtheorem{Qu}{Question}
 
 
 \begin{document}
@@ -107,29 +103,33 @@ Résumé d'article}
 \vspace{1cm}  % Espace entre le titre et la table des matières
 \tableofcontents
 \vspace{1cm} 
-\newpage
+
 \
 
 
 \section{Introduction}
 
-L'article étudié ici, intitulé \og ADAM: A method for Stochastic Optimization \fg{}, a été écrit en 2015 par Diederik P. Kingma (Université d'Amsterdam, OpenAI) et Jimmy Lei Ba (Université de Toronto), dans le cadre d'une conférence à l'International Conference on Learning Representations (ICLR). 
+L'article \og ADAM: A method for Stochastic Optimization \cite{kingma2017adammethodstochasticoptimization}\fg{} a été publié en 2014 (et corrigé jusqu'en 2017),  a été écrit par Diederik P. Kingma (Université d'Amsterdam, OpenAI) et Jimmy Lei Ba (Université de Toronto) dans le cadre de l'International Conference on Learning Representations (ICLR) de 2015. 
 
 \
 
-Cet article présente l'algorithme Adam, algorithme d'optimisation stochastique, basée sur une descente de gradient, dans le cadre d'un espace de paramètres à grande dimension.
-Outre le fait que cet algorithme est simple à implémenter, efficace computationnellement et nécessite peu de mémoire, il offre une méthode qui marche bien dans un large panel de cas, y compris dans les cas problématiques de gradients éparses ou de fonctions-objectifs non stationnaires. En cela, il combine les qualités d'algorithmes existants au préalable, tels que AdaGrad et RMSProp.
+Cet article présente l'algorithme Adam, algorithme d'optimisation stochastique, basé sur une descente de gradient, dans le cadre d'un espace de paramètres à grande dimension.
+Outre le fait que cet algorithme est simple à implémenter, efficace computationnellement et nécessite peu de mémoire, il semble offrir une méthode qui marche bien dans un large panel de cas, y compris dans les cas problématiques de gradients éparses ou de fonctions-objectifs non stationnaires. En cela, il combine les qualités d'algorithmes existants au préalable, tels que AdaGrad et RMSProp.
 
 \
 
-Cet article présente une description précise de l'algorithme Adam, fournit un résultat de convergence de la méthode et détaille l'apport de l'algorithme Adam vis-à-vis d'autres algorithmes. 
+L'article présente une description précise de l'algorithme Adam, fournit un résultat de convergence de la méthode et aborde l'apport de l'algorithme Adam vis-à-vis d'autres algorithmes. 
 
 
 
-\section{Algorithme}
+\section{Algorithme Adam}
+\subsection{Objectif}
+On considère une fonction-objectif stochastique $f(\theta)$ de paramètres $\theta$, qu'on suppose différentiable. L'algorithme Adam est une méthode d'ordre 1 (c'est-à-dire qui repose sur des évaluations de la fonctionnelle $f$ et du gradient $\nabla_{\theta}f$), qui a pour objectif d'optimiser les paramètres $\theta$ afin de minimiser l'espérance $\mathbb E[f(\theta)]$. \\
+L'aspect stochastique peut venir d'une fonction-objectif intrinsèquement bruitée ou bien d'un échantillonnage réalisé à chaque pas de l'algorithme. Typiquement, $f$ peut être une fonction perte, de la forme \\$f(\theta)=\dsum{i=1}n\ell(x_i|\theta)$, où le calcul de gradient $\nabla_{\theta}f(\theta)=\dsum{i=1}n\nabla_{\theta}\ell(x_i|\theta)$ est trop coûteux en nombre d'évaluations de gradients. Il est alors remplacé à chaque étape $t$ par le calcul de $\nabla_{\theta}f_t(\theta)=\dsum{i\in I_t}{}\nabla_{\theta}\ell(x_i|\theta)$ pour $I_t$ un sous-échantillon  et $f_t$ définie par $f_t(\theta)=\dsum{i\in I_t}{}\ell(x_i|\theta)$.
 
-On considère une fonction-objectif stochastique $f(\theta)$ de paramètres $\theta$, qu'on suppose différentiable. On souhaite optimiser les paramètres $\theta$ afin de minimiser l'espérance $\mathbb E[f(\theta)]$. \\
-Outre la fonction $f(\theta)$, l'algorithme nécessite la donnée d'un pas $\alpha$, de taux $\beta_1,\beta_2\in[0,1[$, d'une constante de stabilisation numérique $\varepsilon>0$ et de paramètres initiaux $\theta_0$. Il exécute alors le schéma suivant :
+\subsection{Description de l'algorithme Adam}
+
+Outre la fonction $f(\theta)$, l'algorithme nécessite la donnée d'un pas $\alpha$, de taux $\beta_1,\beta_2\in[0,1[$, d'une constante de stabilisation numérique $\varepsilon>0$ et de paramètres initiaux $\theta_0$ (valeurs par défaut : $\alpha=0.001$, $\beta_1=0.9$, $\beta_2=0.999$, $\varepsilon=10^{-8}$). Il exécute alors le schéma suivant :
 
 
 \begin{algorithm}
@@ -150,43 +150,77 @@ Outre la fonction $f(\theta)$, l'algorithme nécessite la donnée d'un pas $\alp
   \Sortie{$\theta_t$}
 \end{algorithm}
 
-Pour comprendre cet algorithme et identifier les apports de la méthode Adam, nous pouvons le mettre en relation avec d'autres algorithmes de descente de gradient stochastique, présentés dans l'annexe. Nous pouvons maintenant interpréter les étapes de l'algorithme Adam et identifier les nouveautés. 
+Pour comprendre cet algorithme et identifier les apports de la méthode Adam, observons les différentes étapes et comparons-les avec celles d'autres algorithmes classiques de descente de gradient stochastique (présentés dans l'annexe).
 
 \bit
 \item $m_t \longleftarrow \beta_1\cdotp m_{t-1}+(1-\beta_1)\cdotp g_t$\\
 Fournit une estimation de $\mathbb E[g_t]$ par moyenne mobile à décroissance exponentielle : $m_t=(1-\beta_1)\dsum{i=1}t\beta_1^{t-i}\cdotp g_i$.\\
-Permet de garder mémoire des gradients précédents pour atténuer les variations.\\
+Permet de garder mémoire des directions de descente précédentes afin d'atténuer les variations liées au bruit de la fonction.\\
 On trouve une idée similaire dans l'algorithme SGD avec moment.
 
 \item $v_t \longleftarrow \beta_2\cdotp v_{t-1}+(1-\beta_2)\cdotp g_t^2$\\
-Permettra, lors de la mise à jour des paramètres, une mise à l'échelle du gradient, c'est-à-dire qu'on ne va pas utiliser le même pas pour tous les paramètres. On ralentit le pas pour un paramètre qui a beaucoup changé précédemment, et on l'accélère pour un paramètre qui a peu changé. {\red est-ce bien ça ? c'est le paramètre qui change ou la fonction qu'il fait changer ?!}.\\
-On utilise ici encore une estimation de $\mathbb E[g_t^2]$ obtenue par moyenne mobile à décroissance exponentielle.
+Fournit une estimation de $\mathbb E[g_t^2]$, là aussi par moyenne mobile à décroissance exponentielle.\\
+Permettra, lors de la mise à jour des paramètres, une mise à l'échelle du gradient, c'est-à-dire qu'on ne va pas utiliser le même pas pour tous les paramètres. On ralentit le pas en cas de forte variation liée à un paramètre, et on l'accélère en cas de faible variation. 
 On trouve une idée similaire dans les algorithmes AdaGrad (sans moyenne mobile) et RMSProp. 
-
 \item  $\widehat m_t \longleftarrow m_t/(1-\beta_1^t)$ et 
 $\widehat v_t \longleftarrow v_t/(1-\beta_2^t)$\\
-Permet de corriger le biais vers 0 venant de l'initialisation de $m_0$ et $v_0$ à 0. \\
-C'est une innovation fournie par cet algorithme. 
+Permet de réduire le biais vers 0 de $m_t$ et $v_t$ venant de l'initialisation de $m_0$ et $v_0$ à 0. \\
+C'est une innovation fournie par l'algorithme Adam.
 \eit
 
-En conclusion, on peut voir que cet algorithme combine les idées fournies par les précédents algorithmes de descente de gradient, tels que la personnalisation des pas à chaque paramètre et la mémorisation du passé par le biais des moyennes mobiles, tout en apportant un vrai élément : la correction des biais des moments d'ordre 1 et 2. 
+On peut donc observer que l'algorithme Adam combine les idées fournies par les précédents algorithmes de descente de gradient, tels que la personnalisation des pas à chaque paramètre et la mémorisation du passé par le biais des moyennes mobiles, tout en apportant un élément supplémentaire : la correction des biais des moments d'ordre 1 et 2. 
 
 
 
 \section{Efficacité et points forts de la méthode}
 
-\section{Amélioration des méthodes AdaGrad et RMSProp}
+\subsection{Contraction du biais}
 
-+ visu
+La grande différence de l'algorithme Adam par rapport aux autres algorithmes de descente de gradients est fournie par les étapes déterminant $\widehat m_t$ et $\widehat v_t$, qui ont pour effet de contracter le biais des estimateurs des moments $m_t$ de $\mathbb E[g_t]$ et $v_t$ de $\mathbb E[g_t^2]$. En effet, nous avons :
+$$\mathbb E[m_t]=(1-\beta_1)\dsum{i=1}t\beta_1^{t-i}\mathbb E[g_i]= \mathbb E[g_t]\underset{<0}{\underbrace{(1-\beta_1^t)}}+\underset{\zeta}{\underbrace{(1-\beta_1)\dsum{i=1}t\beta_1^{t-i}(\mathbb E[g_i]-\mathbb E[g_t])}}$$
+avec $\zeta$ qui pourra être rendu petit par un bon choix de $\beta_1$. La division par $(1-\beta_1^t)$ permet donc de réduire le biais de $m_t$. Il en est de même pour $v_t$. \\
 
-+ biblio ?!!
-\newpage
-\nocite{kingma2014adam}
+En particulier, en cas de gradients parcimonieux (sparse gradient) qui nécessitent une bonne mémoire du passé, donc des taux $\beta_1$ et $\beta_2$ grands, le biais obtenu peut être conséquent. Le calcul de $\widehat m_t$ et $\widehat v_t$ peut alors s'avérer pertinent.
+
+
+\subsection{Majoration du pas}
+
+Dans l'algorithme Adam, le pas à chaque étape est donné par : $\Delta_t=\alpha\cdotp \widehat m_t/\sqrt{\widehat v_t+\varepsilon}$, où $\varepsilon>0$ évite les divisions par des nombres trop petits. En supposant $\varepsilon=0$, l'article donne la borne suivante du pas : 
+$$|\Delta_t|\leqslant \left\{\begin{array}{ll}
+\alpha\cdotp (1-\beta_1)/\sqrt{1-\beta_2} & \text{ si }(1-\beta_1)>\sqrt{1-\beta_2}\\
+\alpha & \text{ sinon}
+\end{array}\right.
+$$
+
+La première majoration est en fait utile dans le cadre de gradients parcimonieux. Dans les autres cas, on a une borne de l'ordre de $\alpha$ : $|\Delta_t|\lessapprox \alpha$.
+
+\
+
+Le choix de $\alpha$ permet donc d'avoir un contrôle sur la taille des pas effectués, et donc de définir une \og zone de confiance\fg{} autour des paramètres $\theta_t$ dans laquelle on peut se déplacer à partir du calcul du gradient $g_t$.
+
+\subsection{Convergence}
+
+{\red À reprendre}
+
+Nous considérons ici le regret de la méthode défini par : 
+$$R(T)=\dsum{t=1}T[f_t(\theta_t)-f_t(\theta^*)]$$
+où $\theta^*$ sont les paramètres optimaux (oracle){\red bof, pas vraiment ça} vers lesquels on cherche à se diriger. Cette quantité croît avec le temps $T$, mais l'article fournit, sous certaines conditions de gradients bornés et de variations de paramètres bornées {\red à détailler ?!},  la relation suivante, qui garantie une croissance de $R(T)$ contrôlée :
+$$\dfrac{R(T)}{T}=O\left(\dfrac 1{\sqrt T}\right)$$
+
+{\red faut-il parler de la convergence apportée par l'autre article ?}
+
+\section{Visu}
+
+\
+
+
+\nocite{kingma2017adammethodstochasticoptimization}
 \nocite{starmer2023optimization}
 \renewcommand{\refname}{Sources}
 \bibliographystyle{unsrt}  % Style de bibliographie
 \bibliography{sources}  % Nom du fichier .bib sans l'extension
-\newpage
+
+
 
 \section{Annexes}
 
@@ -249,4 +283,6 @@ En conclusion, on peut voir que cet algorithme combine les idées fournies par l
 
 
 \end{document}
+
+
 
