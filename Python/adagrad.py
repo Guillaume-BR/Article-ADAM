@@ -89,7 +89,7 @@ def adagrad(objective, derivative, bounds, n_iter, step_size):
 	return solutions
 
 # seed the pseudo random number generator
-seed(1)
+np.random.seed(1)
 # define range for input
 bounds = asarray([[-2.0, 2.0], [-2.0, 2.0]])
 # define the total iterations
