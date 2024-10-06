@@ -41,7 +41,7 @@
 \usepackage[caption = false]{subfig}
 
 \usepackage[numbers,sort&compress]{natbib} 
-\renewcommand{\cite}[1]{\textsuperscript{\citep{#1}}}
+% \renewcommand{\cite}[1]{\textsuperscript{\citep{#1}}}
 \usepackage{url}
 % Packages pour la mise en page et la personnalisation de la table des matières
 
@@ -125,7 +125,7 @@ L'article présente une description précise de l'algorithme Adam, fournit un r�
 \section{Algorithme Adam}
 \subsection{Objectif}
 On considère une fonction-objectif stochastique $f(\theta)$ de paramètres $\theta$, qu'on suppose différentiable. L'algorithme Adam est une méthode d'ordre 1 (c'est-à-dire qui repose sur des évaluations de la fonctionnelle $f$ et du gradient $\nabla_{\theta}f$), qui a pour objectif d'optimiser les paramètres $\theta$ afin de minimiser l'espérance $\mathbb E[f(\theta)]$. \\
-L'aspect stochastique peut venir d'une fonction-objectif intrinsèquement bruitée ou bien d'un échantillonnage réalisé à chaque pas de l'algorithme. Typiquement, $f$ peut être une fonction perte, de la forme \\$f(\theta)=\dsum{i=1}n\ell(x_i|\theta)$, où le calcul de gradient $\nabla_{\theta}f(\theta)=\dsum{i=1}n\nabla_{\theta}\ell(x_i|\theta)$ est trop coûteux en nombre d'évaluations de gradients. Il est alors remplacé à chaque étape $t$ par le calcul de $\nabla_{\theta}f_t(\theta)=\dsum{i\in I_t}{}\nabla_{\theta}\ell(x_i|\theta)$ pour $I_t$ un sous-échantillon  et $f_t$ définie par $f_t(\theta)=\dsum{i\in I_t}{}\ell(x_i|\theta)$.
+L'aspect stochastique peut venir d'une fonction-objectif intrinsèquement bruitée ou bien d'un échantillonnage réalisé à chaque pas de l'algorithme. Typiquement, $f$ peut être une fonction perte de la forme \\$f(\theta)=\dsum{i=1}n\ell(x_i|\theta)$, où le calcul de gradient $\nabla_{\theta}f(\theta)=\dsum{i=1}n\nabla_{\theta}\ell(x_i|\theta)$ est trop coûteux en nombre d'évaluations de gradients. Il est alors remplacé à chaque étape $t$ de l'algorithme par le calcul de $\nabla_{\theta}f_t(\theta)=\dsum{i\in I_t}{}\nabla_{\theta}\ell(x_i|\theta)$ pour $I_t$ un sous-échantillon  et $f_t$ définie par $f_t(\theta)=\dsum{i\in I_t}{}\ell(x_i|\theta)$.
 
 \subsection{Description de l'algorithme Adam}
 
@@ -161,25 +161,25 @@ On trouve une idée similaire dans l'algorithme SGD avec moment.
 \item $v_t \longleftarrow \beta_2\cdotp v_{t-1}+(1-\beta_2)\cdotp g_t^2$\\
 Fournit une estimation de $\mathbb E[g_t^2]$, là aussi par moyenne mobile à décroissance exponentielle.\\
 Permettra, lors de la mise à jour des paramètres, une mise à l'échelle du gradient, c'est-à-dire qu'on ne va pas utiliser le même pas pour tous les paramètres. On ralentit le pas en cas de forte variation liée à un paramètre, et on l'accélère en cas de faible variation. 
-On trouve une idée similaire dans les algorithmes AdaGrad (sans moyenne mobile) et RMSProp. 
+On trouve une idée similaire dans les algorithmes AdaGrad (mais sans moyenne mobile) et RMSProp. 
+
 \item  $\widehat m_t \longleftarrow m_t/(1-\beta_1^t)$ et 
 $\widehat v_t \longleftarrow v_t/(1-\beta_2^t)$\\
 Permet de réduire le biais vers 0 de $m_t$ et $v_t$ venant de l'initialisation de $m_0$ et $v_0$ à 0. \\
-C'est une innovation fournie par l'algorithme Adam.
+C'est l'innovation fournie par l'algorithme Adam.
 \eit
 
 On peut donc observer que l'algorithme Adam combine les idées fournies par les précédents algorithmes de descente de gradient, tels que la personnalisation des pas à chaque paramètre et la mémorisation du passé par le biais des moyennes mobiles, tout en apportant un élément supplémentaire : la correction des biais des moments d'ordre 1 et 2. 
 
 
 
-\section{Efficacité et points forts de la méthode}
+\section{Points forts de la méthode}
 
 \subsection{Contraction du biais}
 
 La grande différence de l'algorithme Adam par rapport aux autres algorithmes de descente de gradients est fournie par les étapes déterminant $\widehat m_t$ et $\widehat v_t$, qui ont pour effet de contracter le biais des estimateurs des moments $m_t$ de $\mathbb E[g_t]$ et $v_t$ de $\mathbb E[g_t^2]$. En effet, nous avons :
 $$\mathbb E[m_t]=(1-\beta_1)\dsum{i=1}t\beta_1^{t-i}\mathbb E[g_i]= \mathbb E[g_t]\underset{<0}{\underbrace{(1-\beta_1^t)}}+\underset{\zeta}{\underbrace{(1-\beta_1)\dsum{i=1}t\beta_1^{t-i}(\mathbb E[g_i]-\mathbb E[g_t])}}$$
 avec $\zeta$ qui pourra être rendu petit par un bon choix de $\beta_1$. La division par $(1-\beta_1^t)$ permet donc de réduire le biais de $m_t$. Il en est de même pour $v_t$. \\
-
 En particulier, en cas de gradients parcimonieux (sparse gradient) qui nécessitent une bonne mémoire du passé, donc des taux $\beta_1$ et $\beta_2$ grands, le biais obtenu peut être conséquent. Le calcul de $\widehat m_t$ et $\widehat v_t$ peut alors s'avérer pertinent.
 
 
@@ -192,30 +192,27 @@ $$|\Delta_t|\leqslant \left\{\begin{array}{ll}
 \end{array}\right.
 $$
 
-La première majoration est en fait utile dans le cadre de gradients parcimonieux. Dans les autres cas, on a une borne de l'ordre de $\alpha$ : $|\Delta_t|\lessapprox \alpha$.
-
-\
-
-Le choix de $\alpha$ permet donc d'avoir un contrôle sur la taille des pas effectués, et donc de définir une \og zone de confiance\fg{} autour des paramètres $\theta_t$ dans laquelle on peut se déplacer à partir du calcul du gradient $g_t$.
+La première majoration apparaît en fait dans le cadre de gradients parcimonieux. Dans les autres cas, on a une borne de l'ordre de $\alpha$ : $|\Delta_t|\lessapprox \alpha$.\\
+Le choix de $\alpha$ permet donc d'avoir un contrôle sur la taille des pas effectués, et donc de définir une \og zone de confiance\fg{} autour des paramètres $\theta_{t-1}$ dans laquelle on peut se déplacer à partir du calcul du gradient $g_t$.
 
 \subsection{Convergence}
 
-{\red À reprendre}
-
 Nous considérons ici le regret de la méthode défini par : 
-$$R(T)=\dsum{t=1}T[f_t(\theta_t)-f_t(\theta^*)]$$
-où $\theta^*$ sont les paramètres optimaux (oracle){\red bof, pas vraiment ça} vers lesquels on cherche à se diriger. Cette quantité croît avec le temps $T$, mais l'article fournit, sous certaines conditions de gradients bornés et de variations de paramètres bornées {\red à détailler ?!},  la relation suivante, qui garantie une croissance de $R(T)$ contrôlée :
+$$R(T)=\dsum{t=1}Tf_t(\theta_t)-\min_{\theta\in\mathcal X}\dsum{t=1}Tf_t(\theta)$$
+pour $f_t$ des fonctions de pertes convexes arbitraires. Le regret fournit une sorte de mesure de performance de la trajectoire suivie par l'algorithme dans la recherche de l'optimum. Cette quantité croît avec le temps $T$, mais l'article fournit, sous certaines hypothèses de majoration des gradients et de l'écart entre les valeurs de $\theta_t$,  la relation suivante, qui garantie une croissance de $R(T)$ contrôlée :
 $$\dfrac{R(T)}{T}=O\left(\dfrac 1{\sqrt T}\right)$$
 
-{\red faut-il parler de la convergence apportée par l'autre article ?}
+On pourra se référer au résultat récent fourni par \cite{dereich2024convergenceratesadamoptimizer} pour un résultat de convergence presque sûr et en norme $L^p$ de $\theta_t$. 
 
-\section{Visu}
+\section{Comparaisons expérimentales}
 
 \
+
 
 
 \nocite{kingma2017adammethodstochasticoptimization}
 \nocite{starmer2023optimization}
+\nocite{dereich2024convergenceratesadamoptimizer}
 \renewcommand{\refname}{Sources}
 \bibliographystyle{unsrt}  % Style de bibliographie
 \bibliography{sources}  % Nom du fichier .bib sans l'extension
