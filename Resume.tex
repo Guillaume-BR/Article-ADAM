@@ -37,10 +37,11 @@
 
 \usepackage[ruled,lined]{algorithm2e}
 
+
 \usepackage{float}
 \usepackage[caption = false]{subfig}
 
-\usepackage[numbers,sort&compress]{natbib} 
+% \usepackage[numbers,sort&compress]{natbib} 
 % \renewcommand{\cite}[1]{\textsuperscript{\citep{#1}}}
 \usepackage{url}
 % Packages pour la mise en page et la personnalisation de la table des matières
@@ -63,7 +64,7 @@
 \usetikzlibrary{automata}
 \usetikzlibrary{calc,arrows.meta,positioning}
 
-\title{\textsc{ADAM: A method for Stochastic Optimization}\\
+\title{\textsc{Adam: A method for Stochastic Optimization}\\
 Résumé d'article}
 \author{Guillaume BERNARD-REYMOND, Guillaume BOULAND,\\ Camille MOTTIER, Abel SILLY}
 \date{5 octobre 2024}
@@ -95,6 +96,8 @@ Résumé d'article}
 
 \begin{document}
 
+
+
 \maketitle
 
 \
@@ -109,12 +112,12 @@ Résumé d'article}
 
 \section{Introduction}
 
-L'article \og ADAM: A method for Stochastic Optimization \cite{kingma2017adammethodstochasticoptimization}\fg{} a été publié en 2014 (et corrigé jusqu'en 2017) par Diederik P. Kingma (Université d'Amsterdam, OpenAI) et Jimmy Lei Ba (Université de Toronto) dans le cadre de l'International Conference on Learning Representations (ICLR) de 2015. 
+L'article \og Adam: A method for Stochastic Optimization \cite{kingma2017adammethodstochasticoptimization}\fg{} a été publié en 2014 (et corrigé jusqu'en 2017) par Diederik P. Kingma (Université d'Amsterdam, OpenAI) et Jimmy Lei Ba (Université de Toronto) dans le cadre de l'\textit{International Conference on Learning Representations} (ICLR) de 2015. 
 
 \
 
 Cet article présente l'algorithme Adam, algorithme d'optimisation stochastique, basé sur une descente de gradient, dans le cadre d'un espace de paramètres à grande dimension.
-Outre le fait que cet algorithme est simple à implémenter, efficace computationnellement et nécessite peu de mémoire, il semble offrir une méthode qui marche bien dans un large panel de cas, y compris dans les cas problématiques de gradients éparses ou de fonctions-objectifs non stationnaires. En cela, il combine les qualités d'algorithmes existants au préalable, tels que AdaGrad et RMSProp.
+Outre le fait que cet algorithme est simple à implémenter et nécessite peu de mémoire, il semble offrir une méthode qui marche bien dans un large panel de cas, y compris dans les cas problématiques de gradients éparses ou de fonctions-objectifs non stationnaires. En cela, il combine les qualités d'algorithmes existants au préalable, tels que AdaGrad et RMSProp.
 
 \
 
@@ -125,7 +128,7 @@ L'article présente une description précise de l'algorithme Adam, fournit un r�
 \section{Algorithme Adam}
 \subsection{Objectif}
 On considère une fonction-objectif stochastique $f(\theta)$ de paramètres $\theta$, qu'on suppose différentiable. L'algorithme Adam est une méthode d'ordre 1 (c'est-à-dire qui repose sur des évaluations de la fonctionnelle $f$ et du gradient $\nabla_{\theta}f$), qui a pour objectif d'optimiser les paramètres $\theta$ afin de minimiser l'espérance $\mathbb E[f(\theta)]$. \\
-L'aspect stochastique peut venir d'une fonction-objectif intrinsèquement bruitée ou bien d'un échantillonnage réalisé à chaque pas de l'algorithme. Typiquement, $f$ peut être une fonction perte de la forme \\$f(\theta)=\dsum{i=1}n\ell(x_i|\theta)$, où le calcul de gradient $\nabla_{\theta}f(\theta)=\dsum{i=1}n\nabla_{\theta}\ell(x_i|\theta)$ est trop coûteux en nombre d'évaluations de gradients. Il est alors remplacé à chaque étape $t$ de l'algorithme par le calcul de $\nabla_{\theta}f_t(\theta)=\dsum{i\in I_t}{}\nabla_{\theta}\ell(x_i|\theta)$ pour $I_t$ un sous-échantillon  et $f_t$ définie par $f_t(\theta)=\dsum{i\in I_t}{}\ell(x_i|\theta)$.
+L'aspect stochastique peut venir d'une fonction-objectif intrinsèquement bruitée ou bien d'un échantillonnage réalisé à chaque pas de l'algorithme. Typiquement, $f$ peut être une fonction perte de la forme \\$f(\theta)=\dsum{i=1}n\ell(x_i|\theta)$, où le calcul de gradient $\nabla_{\theta}f(\theta)=\dsum{i=1}n\nabla_{\theta}\ell(x_i|\theta)$ est trop coûteux en nombre d'évaluations de gradients. Il est alors remplacé à chaque itération $t$ de l'algorithme par le calcul de $\nabla_{\theta}f_t(\theta)=\dsum{i\in I_t}{}\nabla_{\theta}\ell(x_i|\theta)$ pour $I_t$ un sous-échantillon  et $f_t$ définie par $f_t(\theta)=\dsum{i\in I_t}{}\ell(x_i|\theta)$.
 
 \subsection{Description de l'algorithme Adam}
 
@@ -169,7 +172,7 @@ Permet de réduire le biais vers 0 de $m_t$ et $v_t$ venant de l'initialisation 
 C'est l'innovation fournie par l'algorithme Adam.
 \eit
 
-On peut donc observer que l'algorithme Adam combine les idées fournies par les précédents algorithmes de descente de gradient, tels que la personnalisation des pas à chaque paramètre et la mémorisation du passé par le biais des moyennes mobiles, tout en apportant un élément supplémentaire : la correction des biais des moments d'ordre 1 et 2. 
+On peut donc observer que l'algorithme Adam combine les idées fournies par les précédents algorithmes de descente de gradient, tels que la personnalisation des pas à chaque paramètre et la mémorisation du passé par le biais des moyennes mobiles, tout en apportant un élément supplémentaire : la correction des biais des estimateurs des moments d'ordre 1 et 2. 
 
 
 
@@ -180,7 +183,7 @@ On peut donc observer que l'algorithme Adam combine les idées fournies par les 
 La grande différence de l'algorithme Adam par rapport aux autres algorithmes de descente de gradients est fournie par les étapes déterminant $\widehat m_t$ et $\widehat v_t$, qui ont pour effet de contracter le biais des estimateurs des moments $m_t$ de $\mathbb E[g_t]$ et $v_t$ de $\mathbb E[g_t^2]$. En effet, nous avons :
 $$\mathbb E[m_t]=(1-\beta_1)\dsum{i=1}t\beta_1^{t-i}\mathbb E[g_i]= \mathbb E[g_t]\underset{<0}{\underbrace{(1-\beta_1^t)}}+\underset{\zeta}{\underbrace{(1-\beta_1)\dsum{i=1}t\beta_1^{t-i}(\mathbb E[g_i]-\mathbb E[g_t])}}$$
 avec $\zeta$ qui pourra être rendu petit par un bon choix de $\beta_1$. La division par $(1-\beta_1^t)$ permet donc de réduire le biais de $m_t$. Il en est de même pour $v_t$. \\
-En particulier, en cas de gradients parcimonieux (sparse gradient) qui nécessitent une bonne mémoire du passé, donc des taux $\beta_1$ et $\beta_2$ grands, le biais obtenu peut être conséquent. Le calcul de $\widehat m_t$ et $\widehat v_t$ peut alors s'avérer pertinent.
+En particulier, en cas de gradients parcimonieux (\textit{sparse gradient}) qui nécessitent une bonne mémoire du passé, donc des taux $\beta_1$ et $\beta_2$ grands, le biais obtenu peut être conséquent. Le calcul de $\widehat m_t$ et $\widehat v_t$ peut alors s'avérer pertinent.
 
 
 \subsection{Majoration du pas}
@@ -199,14 +202,19 @@ Le choix de $\alpha$ permet donc d'avoir un contrôle sur la taille des pas effe
 
 Nous considérons ici le regret de la méthode défini par : 
 $$R(T)=\dsum{t=1}Tf_t(\theta_t)-\min_{\theta\in\mathcal X}\dsum{t=1}Tf_t(\theta)$$
-pour $f_t$ des fonctions de pertes convexes arbitraires. Le regret fournit une sorte de mesure de performance de la trajectoire suivie par l'algorithme dans la recherche de l'optimum. Cette quantité croît avec le temps $T$, mais l'article fournit, sous certaines hypothèses de majoration des gradients et de l'écart entre les valeurs de $\theta_t$,  la relation suivante, qui garantie une croissance de $R(T)$ contrôlée :
+pour $f_t$ des fonctions de pertes convexes arbitraires. Le regret fournit une sorte de mesure de performance de la trajectoire suivie par l'algorithme dans la recherche de l'optimum. Cette quantité croît avec le temps $T$, mais l'article fournit, sous certaines hypothèses de majoration des gradients et de l'écart entre les valeurs de $\theta_t$,  la relation suivante, qui garantit une croissance de $R(T)$ contrôlée :
 $$\dfrac{R(T)}{T}=O\left(\dfrac 1{\sqrt T}\right)$$
 
-On pourra se référer au résultat récent fourni par \cite{dereich2024convergenceratesadamoptimizer} pour un résultat de convergence presque sûr et en norme $L^p$ de $\theta_t$. 
+On pourra se référer au résultat récent fourni par \cite{dereich2024convergenceratesadamoptimizer} pour un résultat de convergence presque sure et en norme $L^p$ de $\theta_t$. 
 
 \section{Comparaisons expérimentales}
 
-\
+\begin{figure}[ht]
+\centering
+ \includegraphics[width=6cm]{illu_1.png}
+\caption{}
+\label{fig1}
+\end{figure}
 
 
 
@@ -217,14 +225,12 @@ On pourra se référer au résultat récent fourni par \cite{dereich2024converge
 \bibliographystyle{unsrt}  % Style de bibliographie
 \bibliography{sources}  % Nom du fichier .bib sans l'extension
 
-
+\newpage
 
 \section{Annexes}
 
 
-
-
-\begin{algorithm}
+\begin{algorithm*}
   \caption{SGD}
   \Entree{$f(\theta)$, $\alpha$, $\theta_0$}
   $t\longleftarrow 0$ \\
@@ -234,9 +240,11 @@ On pourra se référer au résultat récent fourni par \cite{dereich2024converge
     $\theta_t \longleftarrow \theta_{t-1}-\alpha \cdotp g_t(\theta_{t-1})$
   }
   \Sortie{$\theta_t$}
-\end{algorithm}
+\end{algorithm*}
 
-\begin{algorithm}
+
+
+\begin{algorithm*}
   \caption{SGD avec moment (1964)}
   \Entree{$f(\theta)$, $\alpha$, $\rho$, $\theta_0$} 
   $t\longleftarrow 0$ \\
@@ -247,9 +255,11 @@ On pourra se référer au résultat récent fourni par \cite{dereich2024converge
     $\theta_t \longleftarrow \theta_{t-1}+m_t$
   }
   \Sortie{$\theta_t$}
-\end{algorithm}
+\end{algorithm*}
 
-\begin{algorithm}
+
+
+\begin{algorithm*}
   \caption{AdaGrad (2011)}
   \Entree{$f(\theta)$, $\alpha$, $\varepsilon$, $\theta_0$}
   $v_0\longleftarrow 0$ \\  
@@ -261,9 +271,10 @@ On pourra se référer au résultat récent fourni par \cite{dereich2024converge
     $\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp g_t/(\sqrt{ v_t}+\varepsilon)$
   }
   \Sortie{$\theta_t$}
-\end{algorithm}
+\end{algorithm*}
 
-\begin{algorithm}
+
+\begin{algorithm*}[h!]
   \caption{RMSProp (2012)}
   \Entree{$f(\theta)$, $\alpha$, $\beta_2$, $\varepsilon$, $\theta_0$}
   $v_0\longleftarrow 0$ \\  
@@ -275,7 +286,7 @@ On pourra se référer au résultat récent fourni par \cite{dereich2024converge
     $\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp g_t/(\sqrt{v_t}+\varepsilon)$
   }
   \Sortie{$\theta_t$}
-\end{algorithm}
+\end{algorithm*}
 
 
 
