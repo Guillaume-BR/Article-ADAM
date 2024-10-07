@@ -8,6 +8,16 @@ from torchvision.transforms import ToTensor
 import matplotlib.pyplot as plt
 import numpy as np
 #%% Import data
+
+device = (
+    "cuda"
+    if torch.cuda.is_available()
+    else "mps"
+    if torch.backends.mps.is_available()
+    else "cpu"
+)
+print(f"Using {device} device")
+
 training_data = datasets.FashionMNIST(
     root = "data",
     train=True,
@@ -15,6 +25,11 @@ training_data = datasets.FashionMNIST(
     transform=ToTensor()
 )
 
+#test_data_noTensor = datasets.FashionMNIST(
+#    root="data",
+#    train=False,
+#    download=True
+#)
 test_data = datasets.FashionMNIST(
     root="data",
     train=False,
@@ -41,13 +56,13 @@ class NeuralNetwork(nn.Module):
         logits = self.linear_relu_stack(x)
         return logits
 
-model = NeuralNetwork()
+model = NeuralNetwork().to(device)
 
 # %%
 ## Define hyperparameters
 learning_rate = 0.001
 batch_size = 64
-epochs = 5
+#epochs = 5
 # %%
 # Loss function (to optimize)
 loss_fn = nn.CrossEntropyLoss() #test with another one ?
@@ -140,12 +155,12 @@ for t in range(epochs):
     train_loop(train_dataloader,model,loss_fn,optimizer,train_error = train_error_SGD)
     test_loop(test_dataloader,model,loss_fn,test_error = test_error_SGD,test_accuracy=test_accuracy_SGD)
 print("Done!")
-# %%
+#%%
 # Visualisation of the test error
 plt.figure()
-plt.plot(np.arange(1,11),np.array(test_error),label = "ADAM",color = "r")
-plt.plot(np.arange(1,11),np.array(test_error_RMSProp),label = "RMSProp",color = "b")
-plt.plot(np.arange(1,11),np.array(test_error_SGD),label = "SGD",color = "g")
+plt.plot(np.arange(1,11),np.array(test_accuracy),label = "ADAM",color = "r")
+plt.plot(np.arange(1,11),np.array(test_accuracy_RMSProp),label = "RMSProp",color = "b")
+plt.plot(np.arange(1,11),np.array(test_accuracy_SGD),label = "SGD",color = "g")
 plt.legend()
 plt.title("Evolution of the test error for each epochs")
 plt.xlabel("Epochs")
