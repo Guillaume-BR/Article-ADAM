@@ -23,6 +23,8 @@
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{footline}[frame number]
 
+\setlength\parindent{0cm}
+
 \begin{document}
 
 \frame{\titlepage}
@@ -82,24 +84,28 @@ Rappel : Qu'est-ce qu'une méthode d'ordre 1 ? Évaluation de $f(\theta)$ et de 
 \end{frame}
 
 
-
-
-\begin{frame}{L'algorithme}
-
-\textbf{Entrées :} $f(\theta)$, $\alpha$, $\beta_1$, $\beta_2$, $\varepsilon$, $\theta_0$\\
-\hspace*{0.5cm}   $m_0\longleftarrow 0$ \\
-\hspace*{0.5cm}  $v_0\longleftarrow 0$ \\  
-\hspace*{0.5cm}  $t\longleftarrow 0$ \\
-\hspace*{0.5cm}Tant que $\theta_t$ ne converge pas\\
-   \hspace*{1.5cm} $t\longleftarrow t+1$\\
-   \hspace*{1.5cm} $g_t \longleftarrow \nabla_{\theta}f_t(\theta_{t-1})$\\
-  \hspace*{1.5cm}  $m_t \longleftarrow \beta_1\cdotp m_{t-1}+(1-\beta_1)\cdotp g_t$\\
-   \hspace*{1.5cm} $v_t \longleftarrow \beta_2\cdotp v_{t-1}+(1-\beta_2)\cdotp g_t^2$\\
-   \hspace*{1.5cm} $\widehat m_t \longleftarrow m_t/(1-\beta_1^t)$\\
-   \hspace*{1.5cm} $\widehat v_t \longleftarrow v_t/(1-\beta_2^t)$\\
-   \hspace*{1.5cm} $\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp \widehat m_t/(\sqrt{\widehat v_t}+\varepsilon)$
-  
-\hspace*{0.5cm} \textbf{Sorties :} $\theta_t$
+\begin{frame}{L'algorithme d'ADAM}
+\begin{center}
+\scalebox{0.9}{
+\begin{algorithm}[H]
+  \caption{Adam}
+  \Entree{$f(\theta)$, $\alpha$, $\beta_1$, $\beta_2$, $\varepsilon$, $\theta_0$}
+  $m_0\longleftarrow 0$ \\
+  $v_0\longleftarrow 0$ \\  
+  $t\longleftarrow 0$ \\
+  \Tq{$\theta_t$ ne converge pas}{
+    $t\longleftarrow t+1$\\
+    $g_t \longleftarrow \nabla_{\theta}f_t(\theta_{t-1})$\\
+    $m_t \longleftarrow \beta_1\cdotp m_{t-1}+(1-\beta_1)\cdotp g_t$\\
+    $v_t \longleftarrow \beta_2\cdotp v_{t-1}+(1-\beta_2)\cdotp g_t^2$\\
+    $\widehat m_t \longleftarrow m_t/(1-\beta_1^t)$\\
+    $\widehat v_t \longleftarrow v_t/(1-\beta_2^t)$\\
+    $\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp \widehat m_t/(\sqrt{\widehat v_t}+\varepsilon)$
+  }
+  \Sortie{$\theta_t$}
+\end{algorithm}
+}
+\end{center}
 \end{frame}
 
 \begin{frame}{Explications}
@@ -132,21 +138,27 @@ $\left.
 \end{array}
 \right\rbrace$ : débiaisage des moments d'ordre 1 et 2 
 
- 
-
-
- 
-
  \pause
 
  $\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp \widehat m_t/(\sqrt{\widehat v_t}+\varepsilon)$ : Mise à jour de $\theta_t$
+ 
+ changer la forme : moche
 
-    
+\end{frame}
+
+\begin{frame}{Mise à jour des paramètres}
+$\alpha,\beta_1,\beta_2$
+\end{frame}
+
+\begin{frame}{Biais}
+\includegraphics[width=\linewidth]{../Images/bias_correction_article.png}
+
+mettre que pour 100 epochs ? rouge/vert : peu visible
 \end{frame}
 
 \begin{frame}{Résultats de convergence}
 
-On définit le regret par : $$R(T)=\sum_{t=1}^{T}f_t(x_t)-\min_{x\in\mathcal{X}}\sum_{t=1}^{T}f_t(x)$$
+On définit le regret par : $$R(T)=\sum_{t=1}^{T}f_t(\theta_t)-\min_{\theta\in\mathcal{X}}\sum_{t=1}^{T}f_t(\theta)$$
 
 \begin{theorem}
   Sous certaines hypothèses de majoration du gradient de $f_t$, et de l'écart entre les valeurs de $\theta_n$ on a : 
@@ -155,8 +167,25 @@ On définit le regret par : $$R(T)=\sum_{t=1}^{T}f_t(x_t)-\min_{x\in\mathcal{X}}
 
 \end{frame}
 
+
+
 \begin{frame}{Simulations numériques}
-    Mettre images et commenter
+  \includegraphics[width=0.45\linewidth]{../Images/FashionMNIST.png} \hfill \includegraphics[width=0.45\linewidth]{../Images/IMDB_article.png}
+\end{frame}
+
+\begin{frame}{Conclusion}
+ADAM est un algorithme :  
+
+\begin{itemize}
+\item[$\bullet$] facilement implémentable 
+\item[$\bullet$] peu gourmand en mémoire
+\item[$\bullet$] efficace dans de nombreux cas
+\end{itemize}
+
+D'où son succès !! 
+
+Limite de l'article : manque de support théorique
+
 \end{frame}
 
 \end{document}
