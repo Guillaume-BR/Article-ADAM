@@ -183,7 +183,8 @@ On peut donc observer que l'algorithme Adam combine les idées fournies par les 
 La grande différence de l'algorithme Adam par rapport aux autres algorithmes de descente de gradients est fournie par les étapes déterminant $\widehat m_t$ et $\widehat v_t$, qui ont pour effet de contracter le biais des estimateurs des moments $m_t$ de $\mathbb E[g_t]$ et $v_t$ de $\mathbb E[g_t^2]$. En effet, nous avons :
 $$\mathbb E[m_t]=(1-\beta_1)\dsum{i=1}t\beta_1^{t-i}\mathbb E[g_i]= \mathbb E[g_t]\underset{<0}{\underbrace{(1-\beta_1^t)}}+\underset{\zeta}{\underbrace{(1-\beta_1)\dsum{i=1}t\beta_1^{t-i}(\mathbb E[g_i]-\mathbb E[g_t])}}$$
 avec $\zeta$ qui pourra être rendu petit par un bon choix de $\beta_1$. La division par $(1-\beta_1^t)$ permet donc de réduire le biais de $m_t$. Il en est de même pour $v_t$. \\
-En particulier, en cas de gradients parcimonieux (\textit{sparse gradient}) qui nécessitent une bonne mémoire du passé, donc des taux $\beta_1$ et $\beta_2$ grands, le biais obtenu peut être conséquent. Le calcul de $\widehat m_t$ et $\widehat v_t$ peut alors s'avérer pertinent.
+En particulier, en cas de gradients parcimonieux (\textit{sparse gradient}) qui nécessitent une bonne mémoire du passé, donc des taux $\beta_1$ et $\beta_2$ grands, le biais obtenu peut être conséquent. Le calcul de $\widehat m_t$ et $\widehat v_t$ peut alors s'avérer pertinent.\\
+On pourra se reporter à la figure \ref{biais} de l'annexe, issue de l'article \cite{kingma2017adammethodstochasticoptimization}, pour observer graphiquement l'effet de la correction des biais.
 
 
 \subsection{Majoration du pas}
@@ -208,17 +209,19 @@ $$\dfrac{R(T)}{T}=O\left(\dfrac 1{\sqrt T}\right)$$
 On pourra se référer au résultat récent fourni par l'article de S. Dereich et A. Jentzen \cite{dereich2024convergenceratesadamoptimizer} pour un résultat de convergence presque sure et en norme $L^p$ de $\theta_t$. 
 
 \section{Comparaisons expérimentales}
+L'article fournit un certain nombre de graphiques illustrant les performances de différentes méthodes de descentes de gradients utilisées sur les bases de données classiques MNIST et IMDB (présentés en annexe dans la figure \ref{fig:IMDB}). Ceux-ci mettent en évidence la bonne performance de l'algorithme Adam, y compris dans le cas de gradients parcimonieux. \\
+Dans la même idée, nous avons comparé ces algorithmes dans le cadre de la base de données fashionMNIST. L'évolution de la fonction-perte en fonction du nombre d'itérations des algorithmes est présentée dans la figure \ref{fig1}. On observe que sur cet exemple, l'algorithme Adam fait aussi bien que les algorithmes RMSProp et Adagrad, et nettement mieux que SGD avec moment. 
 
 
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
- \includegraphics[width=6cm]{illu_1.png}
+ \includegraphics[width=8cm]{illu_1.png}
 \caption{}
 \label{fig1}
 \end{figure}
 
-
+\vs2
 
 \nocite{kingma2017adammethodstochasticoptimization}
 \nocite{starmer2023optimization}
@@ -231,7 +234,7 @@ On pourra se référer au résultat récent fourni par l'article de S. Dereich e
 
 \section{Annexes}
 
-
+\subsection{Algorithmes de descente de gradients}
 \begin{algorithm*}
   \caption{SGD}
   \Entree{$f(\theta)$, $\alpha$, $\theta_0$}
@@ -293,8 +296,20 @@ On pourra se référer au résultat récent fourni par l'article de S. Dereich e
   \label{rmsprop}
 \end{algorithm*}
 
+\subsection{Illustrations graphiques}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=16cm]{IMDB_MNIST_article.png}
+    \caption{Régression logistique entraînée sur la fonction de perte de vraisemblance logarithmique négative sur les bases de données d'images MNIST et de critique de films IMDB avec 10000 vecteurs caractéristiques de sacs de mots (\textit{bag-of-words}) (issues de l'article \cite{kingma2017adammethodstochasticoptimization}).}
+    \label{fig:IMDB}
+\end{figure}
 
-
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{bias_correction_article.png}
+    \caption{Effet de la correction de biais (en rouge, avec correction, en vert, sans correction) après 10 epochs et 100 epochs sur la perte (ordonnées) lors de l'apprentissage d'un VAE pour différents paramétrages de $\alpha$, $\beta_1$, $\beta_2$}
+    \label{biais}
+\end{figure}
 \end{document}
 
 
