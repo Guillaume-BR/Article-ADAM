@@ -117,7 +117,7 @@ L'article \og Adam: A method for Stochastic Optimization \cite{kingma2017adammet
 \
 
 Cet article présente l'algorithme Adam, algorithme d'optimisation stochastique, basé sur une descente de gradient, dans le cadre d'un espace de paramètres à grande dimension.
-Outre le fait que cet algorithme est simple à implémenter et nécessite peu de mémoire, il semble offrir une méthode qui marche bien dans un large panel de cas, y compris dans les cas problématiques de gradients éparses ou de fonctions-objectifs non stationnaires. En cela, il combine les qualités d'algorithmes existants au préalable, tels que AdaGrad et RMSProp.
+Outre le fait que cet algorithme est simple à implémenter et nécessite peu de mémoire, il semble offrir une méthode qui marche bien dans un large panel de cas, y compris dans les cas problématiques de gradients parcimonieux ou de fonctions-objectifs non stationnaires. En cela, il combine les qualités d'algorithmes existants au préalable, tels que AdaGrad et RMSProp.
 
 \
 
@@ -128,7 +128,7 @@ L'article présente une description précise de l'algorithme Adam, fournit un r�
 \section{Algorithme Adam}
 \subsection{Objectif}
 On considère une fonction-objectif stochastique $f(\theta)$ de paramètres $\theta$, qu'on suppose différentiable. L'algorithme Adam est une méthode d'ordre 1 (c'est-à-dire qui repose sur des évaluations de la fonctionnelle $f$ et du gradient $\nabla_{\theta}f$), qui a pour objectif d'optimiser les paramètres $\theta$ afin de minimiser l'espérance $\mathbb E[f(\theta)]$. \\
-L'aspect stochastique peut venir d'une fonction-objectif intrinsèquement bruitée ou bien d'un échantillonnage réalisé à chaque pas de l'algorithme. Typiquement, $f$ peut être une fonction perte de la forme \\$f(\theta)=\dsum{i=1}n\ell(x_i|\theta)$, où le calcul de gradient $\nabla_{\theta}f(\theta)=\dsum{i=1}n\nabla_{\theta}\ell(x_i|\theta)$ est trop coûteux en nombre d'évaluations de gradients. Il est alors remplacé à chaque itération $t$ de l'algorithme par le calcul de $\nabla_{\theta}f_t(\theta)=\dsum{i\in I_t}{}\nabla_{\theta}\ell(x_i|\theta)$ pour $I_t$ un sous-échantillon  et $f_t$ définie par $f_t(\theta)=\dsum{i\in I_t}{}\ell(x_i|\theta)$.
+L'aspect stochastique peut venir d'une fonction-objectif intrinsèquement bruitée ou bien d'un échantillonnage réalisé à chaque pas de l'algorithme. Typiquement, $f$ peut être une fonction perte de la forme \\$f(\theta)=\dsum{i=1}nL(x_i|\theta)$, où le calcul de gradient $\nabla_{\theta}f(\theta)=\dsum{i=1}n\nabla_{\theta}L(x_i|\theta)$ est trop coûteux en nombre d'évaluations de gradients. Il est alors remplacé à chaque itération $t$ de l'algorithme par le calcul de $\nabla_{\theta}f_t(\theta)=\dsum{i\in I_t}{}\nabla_{\theta}L(x_i|\theta)$ pour $I_t$ un sous-échantillon (\textit{mini-batch}) et $f_t$ définie par $f_t(\theta)=\dsum{i\in I_t}{}L(x_i|\theta)$.
 
 \subsection{Description de l'algorithme Adam}
 
@@ -159,12 +159,12 @@ Pour comprendre cet algorithme et identifier les apports de la méthode Adam, ob
 \item $m_t \longleftarrow \beta_1\cdotp m_{t-1}+(1-\beta_1)\cdotp g_t$\\
 Fournit une estimation de $\mathbb E[g_t]$ par moyenne mobile à décroissance exponentielle : $m_t=(1-\beta_1)\dsum{i=1}t\beta_1^{t-i}\cdotp g_i$.\\
 Permet de garder mémoire des directions de descente précédentes afin d'atténuer les variations liées au bruit de la fonction.\\
-On trouve une idée similaire dans l'algorithme SGD avec moment.
+On trouve une idée similaire dans l'algorithme SGD  avec moment (algorithme \ref{SGD}).
 
 \item $v_t \longleftarrow \beta_2\cdotp v_{t-1}+(1-\beta_2)\cdotp g_t^2$\\
 Fournit une estimation de $\mathbb E[g_t^2]$, là aussi par moyenne mobile à décroissance exponentielle.\\
 Permettra, lors de la mise à jour des paramètres, une mise à l'échelle du gradient, c'est-à-dire qu'on ne va pas utiliser le même pas pour tous les paramètres. On ralentit le pas en cas de forte variation liée à un paramètre, et on l'accélère en cas de faible variation. 
-On trouve une idée similaire dans les algorithmes AdaGrad (mais sans moyenne mobile) et RMSProp. 
+On trouve une idée similaire dans les algorithmes AdaGrad (mais sans moyenne mobile, algorithme \ref{adagrad}) et RMSProp (algorithme \ref{rmsprop}). 
 
 \item  $\widehat m_t \longleftarrow m_t/(1-\beta_1^t)$ et 
 $\widehat v_t \longleftarrow v_t/(1-\beta_2^t)$\\
@@ -172,7 +172,7 @@ Permet de réduire le biais vers 0 de $m_t$ et $v_t$ venant de l'initialisation 
 C'est l'innovation fournie par l'algorithme Adam.
 \eit
 
-On peut donc observer que l'algorithme Adam combine les idées fournies par les précédents algorithmes de descente de gradient, tels que la personnalisation des pas à chaque paramètre et la mémorisation du passé par le biais des moyennes mobiles, tout en apportant un élément supplémentaire : la correction des biais des estimateurs des moments d'ordre 1 et 2. 
+On peut donc observer que l'algorithme Adam combine les idées fournies par les précédents algorithmes de descente de gradient, telles que la personnalisation des pas à chaque paramètre et la mémorisation du passé par le biais des moyennes mobiles, tout en apportant un élément supplémentaire : la correction des biais des estimateurs des moments d'ordre 1 et 2. 
 
 
 
@@ -205,9 +205,11 @@ $$R(T)=\dsum{t=1}Tf_t(\theta_t)-\min_{\theta\in\mathcal X}\dsum{t=1}Tf_t(\theta)
 pour $f_t$ des fonctions de pertes convexes arbitraires. Le regret fournit une sorte de mesure de performance de la trajectoire suivie par l'algorithme dans la recherche de l'optimum. Cette quantité croît avec le temps $T$, mais l'article fournit, sous certaines hypothèses de majoration des gradients et de l'écart entre les valeurs de $\theta_t$,  la relation suivante, qui garantit une croissance de $R(T)$ contrôlée :
 $$\dfrac{R(T)}{T}=O\left(\dfrac 1{\sqrt T}\right)$$
 
-On pourra se référer au résultat récent fourni par \cite{dereich2024convergenceratesadamoptimizer} pour un résultat de convergence presque sure et en norme $L^p$ de $\theta_t$. 
+On pourra se référer au résultat récent fourni par l'article de S. Dereich et A. Jentzen \cite{dereich2024convergenceratesadamoptimizer} pour un résultat de convergence presque sure et en norme $L^p$ de $\theta_t$. 
 
 \section{Comparaisons expérimentales}
+
+
 
 \begin{figure}[ht]
 \centering
@@ -255,6 +257,7 @@ On pourra se référer au résultat récent fourni par \cite{dereich2024converge
     $\theta_t \longleftarrow \theta_{t-1}+m_t$
   }
   \Sortie{$\theta_t$}
+  \label{SGD}
 \end{algorithm*}
 
 
@@ -271,6 +274,7 @@ On pourra se référer au résultat récent fourni par \cite{dereich2024converge
     $\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp g_t/(\sqrt{ v_t}+\varepsilon)$
   }
   \Sortie{$\theta_t$}
+  \label{adagrad}
 \end{algorithm*}
 
 
@@ -286,6 +290,7 @@ On pourra se référer au résultat récent fourni par \cite{dereich2024converge
     $\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp g_t/(\sqrt{v_t}+\varepsilon)$
   }
   \Sortie{$\theta_t$}
+  \label{rmsprop}
 \end{algorithm*}
 
 
