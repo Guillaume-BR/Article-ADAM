@@ -11,9 +11,10 @@
     }
 
 \urlstyle{same}
+\usepackage[numbers,sort&compress]{natbib} 
 
 \usepackage[T1]{fontenc} 
-\usepackage[francais]{babel} 
+\usepackage[french]{babel} 
 \usepackage[utf8x]{inputenc}
 \usepackage{amsmath}
 \usepackage{pdfpages}
@@ -23,8 +24,10 @@
 \usepackage{multicol}
 \usepackage{graphicx}
 \usepackage{calc}
+\usepackage{diagbox}
 \usepackage{bbold}
 \usepackage{array}
+\usepackage{minted}
 \usepackage{alltt}
 \usepackage{pstricks-add}
 \usepackage{pstricks}
@@ -37,37 +40,33 @@
 
 \usepackage[ruled,lined]{algorithm2e}
 
-
 \usepackage{float}
 \usepackage[caption = false]{subfig}
 
-% \usepackage[numbers,sort&compress]{natbib} 
-% \renewcommand{\cite}[1]{\textsuperscript{\citep{#1}}}
+%\renewcommand{\cite}[1]{\textsuperscript{\citep{#1}}}
 \usepackage{url}
 % Packages pour la mise en page et la personnalisation de la table des matières
+\usepackage{tocloft}    % Permet de personnaliser la table des matières
+\usepackage{titlesec}   % Permet de personnaliser les titres des sections
+\usepackage{lmodern}    % Améliore la police de base
+\usepackage{setspace}   % Pour gérer les espaces dans le document
 
-
-% \usepackage{tocloft}    % Permet de personnaliser la table des matières
-% \usepackage{titlesec}   % Permet de personnaliser les titres des sections
-% \usepackage{lmodern}    % Améliore la police de base
-% \usepackage{setspace}   % Pour gérer les espaces dans le document
-% 
-% % Personnalisation de la table des matières
-% \renewcommand{\cftsecfont}{\large\bfseries}  % Sections en gras et en plus grand
-% \renewcommand{\cftsecpagefont}{\large\bfseries}  % Numéros de page en gras
-% \renewcommand{\cftsubsecfont}{\normalsize\itshape}  % Sous-sections en italique
-% \renewcommand{\cftsubsubsecfont}{\normalsize\itshape}  % Soussous-sections en italique
-% \renewcommand{\cftsubsecpagefont}{\normalsize\itshape}  % Numéros de sous-sections en italique
-% \renewcommand{\cftsubsubsecpagefont}{\normalsize\itshape}  % Numéros de soussous-sections en italique
-% \renewcommand{\contentsname}{} % Enlever le "Contents"
+% Personnalisation de la table des matières
+\renewcommand{\cftsecfont}{\large\bfseries}  % Sections en gras et en plus grand
+\renewcommand{\cftsecpagefont}{\large\bfseries}  % Numéros de page en gras
+\renewcommand{\cftsubsecfont}{\normalsize\itshape}  % Sous-sections en italique
+\renewcommand{\cftsubsubsecfont}{\normalsize\itshape}  % Soussous-sections en italique
+\renewcommand{\cftsubsecpagefont}{\normalsize\itshape}  % Numéros de sous-sections en italique
+\renewcommand{\cftsubsubsecpagefont}{\normalsize\itshape}  % Numéros de soussous-sections en italique
+\renewcommand{\contentsname}{} % Enlever le "Contents"
 
 \usetikzlibrary{automata}
 \usetikzlibrary{calc,arrows.meta,positioning}
 
-\title{\textsc{Adam: A method for Stochastic Optimization}\\
+\title{\textsc{ADAM: A method for Stochastic Optimization}\\
 Résumé d'article}
 \author{Guillaume BERNARD-REYMOND, Guillaume BOULAND,\\ Camille MOTTIER, Abel SILLY}
-\date{5 octobre 2024}
+\date{7 octobre 2024}
 % \newcommand{\iddots}{\reflectbox{$\ddots$}}
 
 
@@ -75,6 +74,7 @@ Résumé d'article}
 
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\m}{\mathcal}
+\newcommand{\un}{\mathbb{1}_n}
 \newcommand{\N}{\mathbb{N}}
 
 \newcommand{\vs}[1]{\vspace{#1cm}}
@@ -86,12 +86,15 @@ Résumé d'article}
 \newcommand{\bit}{\begin{itemize}}
 \newcommand{\eit}{\end{itemize}}
 
-
+\newcommand{\var}{\mathbb{V}\text{ar}}
+\newcommand{\cov}{\mathbb{C}\text{ov}}
 
 \setlength{\parindent}{0pt}
 \frenchbsetup{StandardLists=true}
 
+\theoremstyle{definition}
 
+\newtheorem{Qu}{Question}
 
 
 \begin{document}
@@ -216,8 +219,8 @@ Dans la même idée, nous avons comparé ces algorithmes dans le cadre de la bas
 
 \begin{figure}[H]
 \centering
- \includegraphics[width=8cm]{illu_1.png}
-\caption{}
+ \includegraphics[width=8cm]{FashionMNIST.png}
+\caption{Évolution de l'erreur d'entraînement pour la base de données \textit{FashionMNIST}, 10 epochs avec des batchs de taille 64, avec la fonction de perte \textit{Cross Entropy}.}
 \label{fig1}
 \end{figure}
 
@@ -311,6 +314,5 @@ Dans la même idée, nous avons comparé ces algorithmes dans le cadre de la bas
     \label{biais}
 \end{figure}
 \end{document}
-
 
 
