@@ -1,13 +1,20 @@
-\documentclass[11pt,aspectratio=169,xcolor=dvipsnames]{beamer}
+\documentclass[11pt,aspectratio=169,xcolor=dvipsnames, french]{beamer}
 \usepackage[utf8]{inputenc}
-\usepackage[french]{babel}
+\usepackage[francais]{babel} 
 \usepackage[T1]{fontenc}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{multicol}
 \usetheme{General}
 %\usetheme{Montpellier}
+
+
+
+\usepackage[ruled,lined]{algorithm2e}
+
+
 
 \title{ADAM : Une méthode pour l'optimisation stochastique}
 \author{Guillaume BERNARD-REYMOND, Guillaume BOULAND,\\ Camille MOTTIER, Abel SILLY}
@@ -19,6 +26,60 @@
 \begin{document}
 
 \frame{\titlepage}
+
+\begin{frame}{L'article}
+\begin{center}
+ \textbf{Adam : A Method for Stochastic Optimization}
+
+\begin{multicols}{2}
+
+ Diederik P. Kingma\\
+ {\small Université d'Amsterdam, OpenAI}
+ 
+ \columnbreak
+ 
+ Jimmy Lei Ba\\
+ {\small Université de Toronto}
+\end{multicols}
+
+Première année de publication : 2014
+\end{center}
+
+\end{frame}
+
+\begin{frame}{L'objectif}
+$f(\theta)$ : fonction-objectif stochastique 
+
+\
+
+Exemple : $f(\theta)=\displaystyle\sum_{i=1}^{n}L(x_i|\theta)$ \hspace{2cm}
+Mini-batch : $f_t(\theta)=\displaystyle \sum_{i\in I_t}L(x_i|\theta)$
+
+\
+
+Objectif : minimiser $\mathbb E[f(\theta)]$
+\end{frame}
+
+\begin{frame}{Méthode d'ordre 1}
+Rappel : Qu'est-ce qu'une méthode d'ordre 1 ? Évaluation de $f(\theta)$ et de $\nabla_{\theta}f(\theta)$
+
+\begin{center}
+\scalebox{0.8}{
+\begin{algorithm}[H]
+  \caption{Descente de gradient stochastique}
+  \Entree{$f(\theta)$, $\alpha$, $\theta_0$}
+  $t\longleftarrow 0$ \\
+  \Tq{$\theta_t$ ne converge pas}{
+    $t\longleftarrow t+1$\\
+    $g_t \longleftarrow \nabla_{\theta}f_t(\theta_{t-1})$\\
+    $\theta_t \longleftarrow \theta_{t-1}-\alpha \cdotp g_t(\theta_{t-1})$
+  }
+  \Sortie{$\theta_t$}
+\end{algorithm}}
+
+\end{center}
+
+\end{frame}
 
 
 
