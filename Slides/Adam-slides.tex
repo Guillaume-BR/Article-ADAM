@@ -8,6 +8,8 @@
 \usepackage{graphicx}
 \usepackage{multicol}
 \usetheme{General}
+
+\usepackage{xcolor}
 %\usetheme{Montpellier}
 
 
@@ -52,16 +54,29 @@ Première année de publication : 2014
 \end{frame}
 
 \begin{frame}{L'objectif}
+	\begin{minipage}[c]{.4\linewidth}
 $f(\theta)$ : fonction-objectif stochastique 
 
 \
 
-Exemple : $f(\theta)=\displaystyle\sum_{i=1}^{n}L(x_i|\theta)$ \hspace{2cm}
+Exemple : $f(\theta)=\displaystyle\sum_{i=1}^{n}L(x_i|\theta)$ 
+
+\
+
 Mini-batch : $f_t(\theta)=\displaystyle \sum_{i\in I_t}L(x_i|\theta)$
 
 \
 
 Objectif : minimiser $\mathbb E[f(\theta)]$
+	\end{minipage} \hfill
+	\begin{minipage}[c]{.55\linewidth}
+	\includegraphics[width=8.5cm]{batch.png}
+
+	\end{minipage}
+
+
+
+
 \end{frame}
 
 \begin{frame}{Méthode d'ordre 1}
@@ -85,10 +100,11 @@ Rappel : Qu'est-ce qu'une méthode d'ordre 1 ? Évaluation de $f(\theta)$ et de 
 
 \end{frame}
 
-
 \begin{frame}{L'algorithme d'ADAM}
 \begin{center}
 \scalebox{0.9}{
+
+
 \begin{algorithm}[H]
   \caption{Adam}
   \Entree{$f(\theta)$, $\alpha$, $\beta_1$, $\beta_2$, $\varepsilon$, $\theta_0$}
@@ -98,11 +114,13 @@ Rappel : Qu'est-ce qu'une méthode d'ordre 1 ? Évaluation de $f(\theta)$ et de 
   \Tq{$\theta_t$ ne converge pas}{
     $t\longleftarrow t+1$\\
     $g_t \longleftarrow \nabla_{\theta}f_t(\theta_{t-1})$\\
-    $m_t \longleftarrow \beta_1\cdotp m_{t-1}+(1-\beta_1)\cdotp g_t$\\
-    $v_t \longleftarrow \beta_2\cdotp v_{t-1}+(1-\beta_2)\cdotp g_t^2$\\
-    $\widehat m_t \longleftarrow m_t/(1-\beta_1^t)$\\
-    $\widehat v_t \longleftarrow v_t/(1-\beta_2^t)$\\
-    $\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp \widehat m_t/(\sqrt{\widehat v_t}+\varepsilon)$
+    $m_t \longleftarrow \beta_1\cdotp m_{t-1}+(1-\beta_1)\cdotp g_t$ \hspace{2cm}( Estimateur de $\mathbb E[g_t]$ )\\
+    \invisible {$v_t \longleftarrow \beta_2\cdotp v_{t-1}+(1-\beta_2)\cdotp g_t^2$
+    \hspace{2.2cm}( Estimateur de $\mathbb E[g_t^2]$ )
+    }\\
+    \invisible {$\widehat m_t \longleftarrow m_t/(1-\beta_1^t)$\hspace{4cm}( \og débiaisage \fg{} )}\\
+    \invisible {$\widehat v_t \longleftarrow v_t/(1-\beta_2^t)$}\\
+    \invisible {$\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp \widehat m_t/(\sqrt{\widehat v_t}+\varepsilon)$\hspace{2.2cm}( Mise à jour )}
   }
   \Sortie{$\theta_t$}
 \end{algorithm}
@@ -110,47 +128,81 @@ Rappel : Qu'est-ce qu'une méthode d'ordre 1 ? Évaluation de $f(\theta)$ et de 
 \end{center}
 \end{frame}
 
-\begin{frame}{Explications}
-
-$f_1,\ldots, f_T$ : fonction $f$ restreinte à des mini-batches aléatoires \\
-
-\pause
-
-$g_t \longleftarrow \nabla_{\theta}f_t(\theta_{t-1})$ : mise à jour du gradient \\
-
- \pause
- 
-$\left.
-\begin{array}{ll}
- m_t \longleftarrow \beta_1\cdotp m_{t-1}+(1-\beta_1)\cdotp g_t \\  
-v_t \longleftarrow \beta_2\cdotp v_{t-1}+(1-\beta_2)\cdotp g_t^2   
-\end{array}
-\right\rbrace$ : mise à jour des moments d'ordre 1 et 2 par moyenne mobile \\
-
-
- 
- 
-
-\pause
-
-$\left.
-\begin{array}{ll}
-\widehat m_t \longleftarrow m_t/(1-\beta_1^t) \\ 
-  \widehat v_t \longleftarrow v_t/(1-\beta_2^t)      
-\end{array}
-\right\rbrace$ : débiaisage des moments d'ordre 1 et 2 
-
- \pause
-
- $\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp \widehat m_t/(\sqrt{\widehat v_t}+\varepsilon)$ : Mise à jour de $\theta_t$
- 
- changer la forme : moche
-
+\begin{frame}
+ Illustartion  Guibou !
 \end{frame}
 
-\begin{frame}{Mise à jour des paramètres}
-$\alpha,\beta_1,\beta_2$
+
+
+\begin{frame}{L'algorithme d'ADAM}
+\begin{center}
+\scalebox{0.9}{
+
+
+\begin{algorithm}[H]
+  \caption{Adam}
+  \Entree{$f(\theta)$, $\alpha$, $\beta_1$, $\beta_2$, $\varepsilon$, $\theta_0$}
+  $m_0\longleftarrow 0$ \\
+  $v_0\longleftarrow 0$ \\  
+  $t\longleftarrow 0$ \\
+  \Tq{$\theta_t$ ne converge pas}{
+    $t\longleftarrow t+1$\\
+    $g_t \longleftarrow \nabla_{\theta}f_t(\theta_{t-1})$\\
+    $m_t \longleftarrow \beta_1\cdotp m_{t-1}+(1-\beta_1)\cdotp g_t$ \hspace{2cm}( Estimateur de $\mathbb E[g_t]$ )\\
+    $v_t \longleftarrow \beta_2\cdotp v_{t-1}+(1-\beta_2)\cdotp g_t^2$
+    \hspace{2.2cm}( Estimateur de $\mathbb E[g_t^2]$ )
+    \\
+    \visible<2-3> {$\widehat m_t \longleftarrow m_t/(1-\beta_1^t)$\hspace{4cm}( \og débiaisage \fg{} )}\\
+    \visible<2-3> {$\widehat v_t \longleftarrow v_t/(1-\beta_2^t)$}\\
+    \visible<3> {$\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp \widehat m_t/(\sqrt{\widehat v_t}+\varepsilon)$\hspace{2.2cm}( Mise à jour )}
+  }
+  \Sortie{$\theta_t$}
+\end{algorithm}
+}
+\end{center}
 \end{frame}
+
+% \begin{frame}{Explications}
+% 
+% $f_1,\ldots, f_T$ : fonction $f$ restreinte à des mini-batches aléatoires \\
+% 
+% \pause
+% 
+% $g_t \longleftarrow \nabla_{\theta}f_t(\theta_{t-1})$ : mise à jour du gradient \\
+% 
+%  \pause
+%  
+% $\left.
+% \begin{array}{ll}
+%  m_t \longleftarrow \beta_1\cdotp m_{t-1}+(1-\beta_1)\cdotp g_t \\  
+% v_t \longleftarrow \beta_2\cdotp v_{t-1}+(1-\beta_2)\cdotp g_t^2   
+% \end{array}
+% \right\rbrace$ : mise à jour des moments d'ordre 1 et 2 par moyenne mobile \\
+% 
+% 
+%  
+%  
+% 
+% \pause
+% 
+% $\left.
+% \begin{array}{ll}
+% \widehat m_t \longleftarrow m_t/(1-\beta_1^t) \\ 
+%   \widehat v_t \longleftarrow v_t/(1-\beta_2^t)      
+% \end{array}
+% \right\rbrace$ : débiaisage des moments d'ordre 1 et 2 
+% 
+%  \pause
+% 
+%  $\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp \widehat m_t/(\sqrt{\widehat v_t}+\varepsilon)$ : Mise à jour de $\theta_t$
+%  
+%  changer la forme : moche
+% 
+% \end{frame}
+% 
+% \begin{frame}{Mise à jour des paramètres}
+% $\alpha,\beta_1,\beta_2$
+% \end{frame}
 
 \begin{frame}{Biais}
 \includegraphics[width=\linewidth]{../Images/bias_correction_article.png}
