@@ -129,7 +129,7 @@ Rappel : Qu'est-ce qu'une méthode d'ordre 1 ? Évaluation de $f(\theta)$ et de 
 \end{frame}
 
 \begin{frame}
- Illustartion  Guibou !
+ Illustration  Guibou !
 \end{frame}
 
 
@@ -204,10 +204,19 @@ Rappel : Qu'est-ce qu'une méthode d'ordre 1 ? Évaluation de $f(\theta)$ et de 
 % $\alpha,\beta_1,\beta_2$
 % \end{frame}
 
-\begin{frame}{Biais}
-\includegraphics[width=\linewidth]{../Images/bias_correction_article.png}
+\begin{frame}{Correction de biais}
+	\begin{minipage}[c]{.45\linewidth}
+	\scriptsize
+$$\begin{array}{ll}
+&\mathbb E[m_t]\\
+=&(1-\beta_1)\displaystyle\sum_{i=1}^t\beta_1^{t-i}\mathbb E[g_i]\\
+=& \mathbb E[g_t]\underset{<1}{\underbrace{(1-\beta_1^t)}}+\underset{\zeta}{\underbrace{(1-\beta_1)\sum_{i=1}^t\beta_1^{t-i}(\mathbb E[g_i]-\mathbb E[g_t])}}
+\end{array}$$
+	\end{minipage} \hfill
+	\begin{minipage}[c]{.5\linewidth}
+\includegraphics[width=7.5cm]{../Images/bias_epochs100.png}
 
-mettre que pour 100 epochs ? rouge/vert : peu visible
+	\end{minipage}
 \end{frame}
 
 \begin{frame}{Résultats de convergence}
