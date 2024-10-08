@@ -43,22 +43,22 @@
 \usepackage{float}
 \usepackage[caption = false]{subfig}
 
-%\renewcommand{\cite}[1]{\textsuperscript{\citep{#1}}}
-\usepackage{url}
-% Packages pour la mise en page et la personnalisation de la table des matières
-\usepackage{tocloft}    % Permet de personnaliser la table des matières
-\usepackage{titlesec}   % Permet de personnaliser les titres des sections
-\usepackage{lmodern}    % Améliore la police de base
-\usepackage{setspace}   % Pour gérer les espaces dans le document
-
-% Personnalisation de la table des matières
-\renewcommand{\cftsecfont}{\large\bfseries}  % Sections en gras et en plus grand
-\renewcommand{\cftsecpagefont}{\large\bfseries}  % Numéros de page en gras
-\renewcommand{\cftsubsecfont}{\normalsize\itshape}  % Sous-sections en italique
-\renewcommand{\cftsubsubsecfont}{\normalsize\itshape}  % Soussous-sections en italique
-\renewcommand{\cftsubsecpagefont}{\normalsize\itshape}  % Numéros de sous-sections en italique
-\renewcommand{\cftsubsubsecpagefont}{\normalsize\itshape}  % Numéros de soussous-sections en italique
-\renewcommand{\contentsname}{} % Enlever le "Contents"
+% %\renewcommand{\cite}[1]{\textsuperscript{\citep{#1}}}
+% \usepackage{url}
+% % Packages pour la mise en page et la personnalisation de la table des matières
+% \usepackage{tocloft}    % Permet de personnaliser la table des matières
+% \usepackage{titlesec}   % Permet de personnaliser les titres des sections
+% \usepackage{lmodern}    % Améliore la police de base
+% \usepackage{setspace}   % Pour gérer les espaces dans le document
+% 
+% % Personnalisation de la table des matières
+% \renewcommand{\cftsecfont}{\large\bfseries}  % Sections en gras et en plus grand
+% \renewcommand{\cftsecpagefont}{\large\bfseries}  % Numéros de page en gras
+% \renewcommand{\cftsubsecfont}{\normalsize\itshape}  % Sous-sections en italique
+% \renewcommand{\cftsubsubsecfont}{\normalsize\itshape}  % Soussous-sections en italique
+% \renewcommand{\cftsubsecpagefont}{\normalsize\itshape}  % Numéros de sous-sections en italique
+% \renewcommand{\cftsubsubsecpagefont}{\normalsize\itshape}  % Numéros de soussous-sections en italique
+% \renewcommand{\contentsname}{} % Enlever le "Contents"
 
 \usetikzlibrary{automata}
 \usetikzlibrary{calc,arrows.meta,positioning}
@@ -184,7 +184,7 @@ On peut donc observer que l'algorithme Adam combine les idées fournies par les 
 \subsection{Contraction du biais}
 
 La grande différence de l'algorithme Adam par rapport aux autres algorithmes de descente de gradients est fournie par les étapes déterminant $\widehat m_t$ et $\widehat v_t$, qui ont pour effet de contracter le biais des estimateurs des moments $m_t$ de $\mathbb E[g_t]$ et $v_t$ de $\mathbb E[g_t^2]$. En effet, nous avons :
-$$\mathbb E[m_t]=(1-\beta_1)\dsum{i=1}t\beta_1^{t-i}\mathbb E[g_i]= \mathbb E[g_t]\underset{>0}{\underbrace{(1-\beta_1^t)}}+\underset{\zeta}{\underbrace{(1-\beta_1)\dsum{i=1}t\beta_1^{t-i}(\mathbb E[g_i]-\mathbb E[g_t])}}$$
+$$\mathbb E[m_t]=(1-\beta_1)\dsum{i=1}t\beta_1^{t-i}\mathbb E[g_i]= \mathbb E[g_t]\underset{<1}{\underbrace{(1-\beta_1^t)}}+\underset{\zeta}{\underbrace{(1-\beta_1)\dsum{i=1}t\beta_1^{t-i}(\mathbb E[g_i]-\mathbb E[g_t])}}$$
 avec $\zeta$ qui pourra être rendu petit par un bon choix de $\beta_1$. La division par $(1-\beta_1^t)$ permet donc de réduire le biais de $m_t$. Il en est de même pour $v_t$. \\
 En particulier, en cas de gradients parcimonieux (\textit{sparse gradient}) qui nécessitent une bonne mémoire du passé, donc des taux $\beta_1$ et $\beta_2$ grands, le biais obtenu peut être conséquent. Le calcul de $\widehat m_t$ et $\widehat v_t$ peut alors s'avérer pertinent.\\
 On pourra se reporter à la figure \ref{biais} de l'annexe, issue de l'article \cite{kingma2017adammethodstochasticoptimization}, pour observer graphiquement l'effet de la correction des biais.
@@ -219,7 +219,7 @@ Dans la même idée, nous avons comparé ces algorithmes dans le cadre de la bas
 
 \begin{figure}[H]
 \centering
- \includegraphics[width=8cm]{FashionMNIST.png}
+ \includegraphics[width=8cm]{Images/FashionMNIST.png}
 \caption{Évolution de l'erreur d'entraînement pour la base de données \textit{FashionMNIST}, 10 epochs avec des batchs de taille 64, avec la fonction de perte \textit{Cross Entropy}.}
 \label{fig1}
 \end{figure}
@@ -302,14 +302,14 @@ Dans la même idée, nous avons comparé ces algorithmes dans le cadre de la bas
 \subsection{Illustrations graphiques}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=16cm]{IMDB_MNIST_article.png}
+    \includegraphics[width=14cm]{Images/IMDB_MNIST_article.png}
     \caption{Régression logistique entraînée sur la fonction de perte de vraisemblance logarithmique négative sur les bases de données d'images MNIST et de critique de films IMDB avec 10000 vecteurs caractéristiques de sacs de mots (\textit{bag-of-words}) (issues de l'article \cite{kingma2017adammethodstochasticoptimization}).}
     \label{fig:IMDB}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{bias_correction_article.png}
+    \includegraphics[width=\linewidth]{Images/bias_correction_article.png}
     \caption{Effet de la correction de biais (en rouge, avec correction, en vert, sans correction) après 10 epochs et 100 epochs sur la perte (ordonnées) lors de l'apprentissage d'un VAE pour différents paramétrages de $\alpha$, $\beta_1$, $\beta_2$}
     \label{biais}
 \end{figure}
