@@ -123,6 +123,8 @@ train_error_adam = []
 test_error = []
 test_accuracy = []
 for t in range(epochs):
+    train_dataloader = DataLoader(training_data,batch_size=64, shuffle=True)
+    test_dataloader = DataLoader(test_data,batch_size=64, shuffle=True)
     print(f"Epoch {t+1}\n-------------------------------")
     train_loop(train_dataloader,model,loss_fn,optimizer,train_error = train_error_adam)
     test_loop(test_dataloader,model,loss_fn,test_error,test_accuracy)
@@ -137,6 +139,8 @@ train_error_RMSProp = []
 test_error_RMSProp = []
 test_accuracy_RMSProp = []
 for t in range(epochs):
+    train_dataloader = DataLoader(training_data,batch_size=64, shuffle=True)
+    test_dataloader = DataLoader(test_data,batch_size=64, shuffle=True)
     print(f"Epoch {t+1}\n-------------------------------")
     train_loop(train_dataloader,model,loss_fn,optimizer,train_error = train_error_RMSProp)
     test_loop(test_dataloader,model,loss_fn,test_error = test_error_RMSProp,test_accuracy=test_accuracy_RMSProp)
@@ -146,25 +150,56 @@ print("Done!")
 ### Test with SDG ###
 model = NeuralNetwork()
 loss_fn = nn.CrossEntropyLoss()
-optimizer = torch.optim.SGD(model.parameters(),lr = learning_rate)
+optimizer = torch.optim.SGD(model.parameters(),lr = learning_rate,momentum = 0.5)
 train_error_SGD = []
 test_error_SGD = []
 test_accuracy_SGD = []
 for t in range(epochs):
+    train_dataloader = DataLoader(training_data,batch_size=64, shuffle=True)
+    test_dataloader = DataLoader(test_data,batch_size=64, shuffle=True)
     print(f"Epoch {t+1}\n-------------------------------")
     train_loop(train_dataloader,model,loss_fn,optimizer,train_error = train_error_SGD)
     test_loop(test_dataloader,model,loss_fn,test_error = test_error_SGD,test_accuracy=test_accuracy_SGD)
 print("Done!")
 #%%
-# Visualisation of the test error
+### Test with Adagrad ###
+model = NeuralNetwork()
+loss_fn = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adagrad(model.parameters(),lr = 0.01)
+train_error_Adagrad = []
+test_error_Adagrad = []
+test_accuracy_Adagrad = []
+for t in range(epochs):
+    train_dataloader = DataLoader(training_data,batch_size=64, shuffle=True)
+    test_dataloader = DataLoader(test_data,batch_size=64, shuffle=True)
+    print(f"Epoch {t+1}\n-------------------------------")
+    train_loop(train_dataloader,model,loss_fn,optimizer,train_error = train_error_Adagrad)
+    test_loop(test_dataloader,model,loss_fn,test_error = test_error_Adagrad,test_accuracy=test_accuracy_Adagrad)
+print("Done!")
+#%%
+# Visualisation of the test accuracy
 plt.figure()
 plt.plot(np.arange(1,11),np.array(test_accuracy),label = "ADAM",color = "r")
 plt.plot(np.arange(1,11),np.array(test_accuracy_RMSProp),label = "RMSProp",color = "b")
-plt.plot(np.arange(1,11),np.array(test_accuracy_SGD),label = "SGD",color = "g")
+plt.plot(np.arange(1,11),np.array(test_accuracy_SGD),label = "SGD + momentum (0.5)",color = "y")
+plt.plot(np.arange(1,11),np.array(test_accuracy_Adagrad),label = "Adagrad",color = "g")
+plt.legend()
+plt.title("Evolution of the test accuracy for each epochs")
+plt.xlabel("Epochs")
+plt.ylabel("Test Accuracy")
+plt.legend()
+plt.show()
+#%% Test error
+# Visualisation of the test error
+plt.figure()
+plt.plot(np.arange(1,11),np.array(test_error),label = "ADAM",color = "r")
+plt.plot(np.arange(1,11),np.array(test_error_RMSProp),label = "RMSProp",color = "b")
+plt.plot(np.arange(1,11),np.array(test_error_SGD),label = "SGD + momentum (0.5)",color = "y")
+plt.plot(np.arange(1,11),np.array(test_error_Adagrad),label = "Adagrad",color = "g")
 plt.legend()
 plt.title("Evolution of the test error for each epochs")
 plt.xlabel("Epochs")
-plt.ylabel("Test Accuracy")
+plt.ylabel("Test error")
 plt.legend()
 plt.show()
 # %%
@@ -172,9 +207,10 @@ plt.show()
 plt.figure()
 plt.plot(np.arange(1,101),np.array(train_error_adam),label = "ADAM",color = "r")
 plt.plot(np.arange(1,101),np.array(train_error_RMSProp),label = "RMSProp",color = "b")
-plt.plot(np.arange(1,101),np.array(train_error_SGD),label = "SGD",color = "g")
+plt.plot(np.arange(1,101),np.array(train_error_Adagrad),label = "Adagrad", color = "g")
+plt.plot(np.arange(1,101),np.array(train_error_SGD),label = "SGD + momentum (0.5)",color = "y")
 plt.xlabel("Train iteration")
-plt.title("Evolution of the training error for each iteration")
+plt.title("Evolution of the training error on FashionMNIST dataset")
 plt.ylabel("Train Loss")
 plt.legend()
 plt.show()
