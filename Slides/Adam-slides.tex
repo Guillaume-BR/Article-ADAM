@@ -172,14 +172,14 @@ Qu'est-ce qu'une méthode d'ordre 1 ? \hspace{.5cm}$\longrightarrow$ Évaluation
     $t\longleftarrow t+1$\\
     $g_t \longleftarrow \nabla_{\theta}f_t(\theta_{t-1})$\\
     $m_t \longleftarrow \beta_1\cdotp m_{t-1}+(1-\beta_1)\cdotp g_t$ \hspace{2cm}( Estimateur de $\mathbb E[g_t]$ )\\
-    \visible<2>{$v_t \longleftarrow \beta_2\cdotp v_{t-1}+(1-\beta_2)\cdotp g_t^2$
-    \hspace{2.2cm}( Estimateur de $\mathbb E[g_t^2]$ )}
+    $v_t \longleftarrow \beta_2\cdotp v_{t-1}+(1-\beta_2)\cdotp g_t^2$
+    \hspace{2.2cm}( Estimateur de $\mathbb E[g_t^2]$ )
     \\
     \invisible{ {\color{red}$\widehat m_t \longleftarrow m_t/(1-\beta_1^t)$\hspace{4cm}( \og débiaisage \fg{} )\\
     $\widehat v_t \longleftarrow v_t/(1-\beta_2^t)$}}\\
     \invisible {$\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp { {\color{red}\widehat m_t}}/(\sqrt{{ \color{red}\widehat v_t}}+\varepsilon)$\hspace{2.2cm}( Mise à jour )}
-    \visible<2> {$\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp m_t/(\sqrt{v_t}+\varepsilon)$
-    \hspace{2.2cm}( Mise à jour )}
+    $\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp m_t/(\sqrt{v_t}+\varepsilon)$
+    \hspace{2.2cm}( Mise à jour )
   }
   \Sortie{$\theta_t$}
 \end{algorithm}
@@ -214,11 +214,11 @@ Qu'est-ce qu'une méthode d'ordre 1 ? \hspace{.5cm}$\longrightarrow$ Évaluation
     $v_t \longleftarrow \beta_2\cdotp v_{t-1}+(1-\beta_2)\cdotp g_t^2$
     \hspace{2.2cm}( Estimateur de $\mathbb E[g_t^2]$ )
     \\
-    \visible<2> { {\color{red}$\widehat m_t \longleftarrow m_t/(1-\beta_1^t)$\hspace{4cm}( \og réduction de biais \fg{} )\\
-    $\widehat v_t \longleftarrow v_t/(1-\beta_2^t)$}}\\
-    \visible<2> {$\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp { {\color{red}\widehat m_t}}/(\sqrt{{ \color{red}\widehat v_t}}+\varepsilon)$\hspace{2.2cm}( Mise à jour )}
+    {\color{red}$\widehat m_t \longleftarrow m_t/(1-\beta_1^t)$\hspace{4cm}( \og réduction de biais \fg{} )\\
+    $\widehat v_t \longleftarrow v_t/(1-\beta_2^t)$}\\
+    $\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp { {\color{red}\widehat m_t}}/(\sqrt{{ \color{red}\widehat v_t}}+\varepsilon)$\hspace{2.2cm}( Mise à jour )}
     \visible<1> {$\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp m_t/(\sqrt{v_t}+\varepsilon)$
-    \hspace{2.2cm}( Mise à jour )}
+    \hspace{2.2cm}( Mise à jour )
   }
   \Sortie{$\theta_t$}
 \end{algorithm}
