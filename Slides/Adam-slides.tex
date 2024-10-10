@@ -7,6 +7,7 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{multicol}
+\usepackage{tikz}
 \usetheme{General}
 
 \usepackage{xcolor}
@@ -54,7 +55,7 @@ Objectif de l'article : introduire un algorithme d'optimisation stochastique
 
 \end{frame}
 
-\begin{frame}{L'objectif}
+\begin{frame}{Contexte et objectifs}
 	\begin{minipage}[c]{.4\linewidth}
 $f(\theta)$ : fonction-objectif stochastique 
 
@@ -133,9 +134,23 @@ Qu'est-ce qu'une méthode d'ordre 1 ? \hspace{.5cm}$\longrightarrow$ Évaluation
 \end{frame}
 
 \begin{frame}
+
+\vspace*{2cm}
+
 \begin{center}
-\hspace{-1cm}
-    \includegraphics[width=10cm]{../Images/Gradient1.pdf}
+\begin{tikzpicture}
+\draw[-stealth,color=red,line width=2pt](0,0)--(0,3)node[left]{\textcolor{red}{$g_0$}};
+\draw[-stealth,line width=2pt](0,0)--(0,2)node[left]{$m_0$};
+
+\draw[-stealth,line width=2pt] (2,2)--(3,4);
+\draw[-stealth,color=red,line width=2pt](2,2) -- (4,3.5);
+
+\draw[-stealth,line width=2pt] (5,2.5)--(7,3)node[above]{$m_{t-1}$};
+\draw[-stealth,color=red,line width=2pt](5,2.5) -- (7,1.5)node[below]{\textcolor{red}{$g_{t-1}$}};
+
+\draw[-stealth,line width=2pt] (8.5,3)--(10,4)node[right]{$m_t$};
+\draw[-stealth,color=red,line width=2pt](8.5,3) -- (10,4.5)node[left]{\textcolor{red}{$g_t$}};
+\end{tikzpicture}
 \end{center}
 \end{frame}
 
@@ -199,7 +214,7 @@ Qu'est-ce qu'une méthode d'ordre 1 ? \hspace{.5cm}$\longrightarrow$ Évaluation
     $v_t \longleftarrow \beta_2\cdotp v_{t-1}+(1-\beta_2)\cdotp g_t^2$
     \hspace{2.2cm}( Estimateur de $\mathbb E[g_t^2]$ )
     \\
-    \visible<2> { {\color{red}$\widehat m_t \longleftarrow m_t/(1-\beta_1^t)$\hspace{4cm}( \og débiaisage \fg{} )\\
+    \visible<2> { {\color{red}$\widehat m_t \longleftarrow m_t/(1-\beta_1^t)$\hspace{4cm}( \og réduction de biais \fg{} )\\
     $\widehat v_t \longleftarrow v_t/(1-\beta_2^t)$}}\\
     \visible<2> {$\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp { {\color{red}\widehat m_t}}/(\sqrt{{ \color{red}\widehat v_t}}+\varepsilon)$\hspace{2.2cm}( Mise à jour )}
     \visible<1> {$\theta_t \longleftarrow \theta_{t-1}-\alpha\cdotp m_t/(\sqrt{v_t}+\varepsilon)$
@@ -260,7 +275,7 @@ Qu'est-ce qu'une méthode d'ordre 1 ? \hspace{.5cm}$\longrightarrow$ Évaluation
 %     \end{center}
 % \end{frame}
 
-\begin{frame}{Correction de biais}
+\begin{frame}{Réduction de biais}
 	\begin{minipage}[c]{.3\linewidth}
 	$$m_t=(1-\beta_1)\displaystyle\sum_{i=1}^t\beta_1^{t-i}\cdotp g_i$$
 $$\mathbb E[m_t]
@@ -280,14 +295,14 @@ $$\widehat m_t \longleftarrow m_t/(1-\beta_1^t)$$
 
 
 
-\begin{frame}{Simulations numériques}
+\begin{frame}{Illustrations}
 \begin{center}
   \includegraphics[width=0.45\linewidth]{../Images/FashionMNIST.png} 
 \end{center}
 \end{frame}
 
 
-\begin{frame}{Simulations numériques}
+\begin{frame}{Illustrations}
  \includegraphics[width=0.45\linewidth]{../Images/IMDB_article.png}\hfill 
  \includegraphics[width=0.45\linewidth]{../Images/Multilayer.png} 
 \end{frame}
@@ -315,11 +330,8 @@ ADAM est un algorithme :
 \item[$\bullet$] efficace dans de nombreux cas
 \end{itemize}
 
-D'où son succès !
 
-\
-
-Limite de l'article : manque de support théorique
+\textbf{Limite de l'article }: manque de support théorique
 
 \end{frame}
 
